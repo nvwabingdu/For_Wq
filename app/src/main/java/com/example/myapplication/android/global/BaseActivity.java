@@ -14,8 +14,8 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.myapplication.android_whq.BuildConfig;
-import com.myapplication.android_whq.R;
+import com.example.myapplication.R;
+
 
 /**
  * Created by wangqi on 2017/12/9.
