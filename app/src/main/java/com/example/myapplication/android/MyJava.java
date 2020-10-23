@@ -1,7 +1,11 @@
 package com.example.myapplication.android;
 
 import android.app.Activity;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import com.example.myapplication.android.utils.Tools;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -25,10 +29,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.lang.reflect.Array;
-import java.net.URI;
-import java.util.AbstractCollection;
-import java.util.AbstractList;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,15 +40,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
-import java.util.RandomAccess;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * Created by Android Studio.
@@ -55,7 +57,7 @@ import java.util.regex.Pattern;
  */
 class MyJava {
     /**
-     * java学习篇------------标志符，数据类型，运算符
+     * java学习篇1------------标志符，数据类型，运算符
      */
     public void indentifier() {
 //一.标识符
@@ -177,9 +179,8 @@ class MyJava {
 //        场景8：求相反数 (~x+1)
         }
     }
-
     /**
-     * java学习篇------------循环，if，foreach
+     * java学习篇2------------循环，if，foreach
      */
     private void myIf() throws Exception {
 //-----if语句
@@ -213,137 +214,8 @@ class MyJava {
 //            /*要做什么操作*/
 //        }
     }
-
     /**
-     * java学习篇------------java面向对象
-     */
-    class myObject {
-        //定义的常量 变量
-        private final int PI = 21;
-        private final String TX = "腾讯";
-        private String mName, mBlance, mAccount, mMoney;
-        private int a, b, c;
-        private ArrayList<Integer> MList;
-
-        //构造（没有返回值）
-        public myObject() {
-        }
-
-        ;//默认的构造方法
-
-        public myObject(String a) {
-        }
-
-        ;//单参数的构造方法
-
-        public myObject(int b, double c) {
-        }
-
-        ;//多参数的构造方法
-
-        //自动生成的构造方法，一般用于对象数组
-        public myObject(String mName, String mBlance, String mAccount, String mMoney, int a, int b, int c, ArrayList<Integer> MList) {
-            this.mName = mName;
-            this.mBlance = mBlance;
-            this.mAccount = mAccount;
-            this.mMoney = mMoney;
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.MList = MList;
-        }
-
-        //普通方法，非构造方法
-        public void JavaThree(int a) {
-        }
-
-        ;
-
-        //方法的重载  (方法名相同，参数列表不同)
-        public void JavaThree(String a, int b) {
-        }
-
-
-/*面向对象的三大特征：封装 继承  多态  还有六大原则 自己看
----------封装：
-讲一个类的属性私有化，同时对外提供公共的访问方法。封装的作用：为了保护数据安全。
----------继承：
-就是以现有的类为模板，扩展新功能，创建出新的类的过程。其中，模板类被称为父类或者基类，扩展的类被称为子类或者派生类
-              子类会完全的继承父类中的所有非私有的数据成员，而且子类无法选择性的继承父类。
-              Java中的继承是单继承，也就说一个子类只能直接继承自一个父类。
-              继承只能继承属性  不能继承值。
-----------多态：
-编译时数据类型和运行时的数据类型不一致，就会发生多态。父类对象的位置可以用一个子类对象来代替，实际运行时，活动的就是这一个子类对象。
-                 大前提 ：必须有继承或者实现，通常还有一个前提 存在复写
-      多态也叫里式替换原则：子类对象完美替换父类对象并且对程序本身不造成任何伤害
-
-      多态：对外一个接口，内部多种实现分为编译时多态和运行时多态
-             编译时多态：分为重写和重载
-             运行时多态：向上转型和向下转型
-
-              向上转型：Animal   animal  =new  Dog();
-              调用的是父类的 和子类复写的   不能调用子类的  说到底父类的（但是子类复写，相当于扩展了方法）
-
-              向下转型：Dog   dog  = (Dog)animal;（必须经过向上转型，拿到Animal的实例）
-              调用的是子类所有和父类非私有，也就是子类继承的  说到底还是子类的（这样来说，用向上转型的作用似乎更大）
-
-              Dog   dog  =new Animal();
-              此转型有待参考
-              */
-
-//    二，关于修饰符的访问权限
-//    类型            无修饰符   private    protected    public
-//    同类              是        是           是         是
-//    同一包中的子类      是                    是          是
-//    同一包中的非子类    是                    是          是
-//    不同包中的子类                           是           是
-//    不同包中的非子类                                      是
-
-
-        //    三，引用变量的赋值
-        {
-            String s = "hello";
-            String t = s;
-            s = "world";
-//    对于引用数据类型  就是对象  数组  String
-            if (s.equals(t)) {
-                Log.e("tag", "我比较的是值");
-            }
-            if (s == t) {
-                Log.e("tag", "我比较的是空间地址");
-            }
-/*
- 关于equals与==的区别从以下几个方面来说：
-（1） 如果是基本类型比较，那么只能用==来比较，不能用equals
-（2） 对于基本类型的包装类型，比如Boolean、Character、Byte、Shot、Integer、Long、Float、Double等的引用变量，
-     ==是比较地址的，而equals是比较内容的。
-（3） 注意：对于String(字符串)、
-     StringBuffer(线程安全的可变字符序列)、
-     StringBuilder(可变字符序列)这三个类作进一步的说明。
-     */
-        }
-
-        //    父类：Throwable     子类：异常 Exception     子类：错误 Error
-        public void method() throws Throwable {
-            int a = 1 + 2;
-            try {
-                /*有可能出异常的语句*/
-            } catch (NullPointerException e) {
-                e.getMessage();
-            } catch (ArrayIndexOutOfBoundsException e) {
-                e.toString();
-            } catch (Exception e) {
-                e.toString();
-                throw e;//抛出到头方法
-            } finally {
-                a = 56;
-            }
-
-        }
-    }
-
-    /**
-     * java学习篇------------数组Arrays
+     * java学习篇3------------数组Arrays
      */
     private void myArrays() {
         //    一，声明
@@ -374,9 +246,8 @@ class MyJava {
         }
 
     }
-
     /**
-     * java学习篇------------常用类
+     * java学习篇4------------常用类
      */
     private void frequentlyClass() {
 
@@ -423,9 +294,8 @@ class MyJava {
             m2.lookingAt();//返回false,因为\d+不能匹配前面的aa
         }
     }
-
     /**
-     * java学习篇------------IO流
+     * java学习篇5------------IO流
      */
     private void myIoStream() throws Exception {
         //字节流(8位)
@@ -466,7 +336,6 @@ class MyJava {
         //字符流(16位Unicode)
         //1.字符写入流
         Reader reader = new Reader() {
-
             @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 return 0;
@@ -486,7 +355,6 @@ class MyJava {
 
         //2.字符写出流
         Writer writer = new Writer() {
-
             @Override
             public void write(char[] cbuf, int off, int len) throws IOException {
 
@@ -510,10 +378,18 @@ class MyJava {
         BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
         //实现序列化接口  序列化就是保存对象的值
+
+
+    }
+    /**
+     * java学习篇6------------序列化Serializable
+     */
+    private void mySerializable() {
+        //关于序列化：
+        //1.Thread线程类/static静态类/成员方法/静态成员变量  都不适用于序列化
+        //2.关键字：transient 表示为不用于序列化
+
         class A implements Serializable {
-            //关于序列化：
-            //1.Thread线程类/static静态类/成员方法/静态成员变量  都不适用于序列化
-            //2.关键字：transient 表示为不用于序列化
             transient String name = "";
 
             void method() {
@@ -521,16 +397,171 @@ class MyJava {
         }
 
     }
-
     /**
-     * java学习篇------------多线程Thread
+     * java学习篇7------------多线程Thread
      */
     private void myThread() {
+//                       ④阻塞状态
+//①新建状态	②就绪状态	③运行状态 	⑤终止状态
+//                线程的创建
+//        1、继承Thread类
+//        Java.lang包中的Thread类，是一个专门用来创建线程的类，该类中提供了线程所用到的属性和方法。我们通过创建该类的子类来实现多线程。
+//        1)  子类覆盖父类中的run方法，将线程运行的代码存放在run中。
+//        2)  建立子类对象的同时线程也被创建。
+//        3)通过调用start方法开启线程。
 
-    }
-
+//        线程创建的两种方式
+//        1.继承Thread类
+        class TestThread extends Thread{
+            //run方法
+            public void run(){
+                for(int i=0;i<10;i++){
+                    Tools.showLog("打印"+i+"次");
+                }
+                try {
+                    sleep(500);//线程睡觉
+                    wait(1000);//线程等待
+                    notify();//唤醒等待线程
+                    notifyAll();//唤醒所有等待线程
+                    setPriority(Thread.NORM_PRIORITY);//5
+                    join();//加入方法，参加
+                    yield();//强制终止线程  线程的礼让
+                    interrupt();//中断线程
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //测试和线程的方法
+        {
+            TestThread testThread=new TestThread();
+            try {
+                testThread.start();//启动线程
+                testThread.getId();
+                testThread.getName();
+                testThread.getPriority();
+                testThread.interrupt();;
+                testThread.isAlive();//测试当前线程是否在活动
+                testThread.setDaemon(true);
+                testThread.wait(100);
+                testThread.notify();
+                testThread.notifyAll();
+                testThread.stop();//已经不再使用
+                testThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // 2.实现Runnable接口
+        class Test2Thread implements Runnable{
+            int i=0;
+            @Override
+            public void run() {
+                while(true){
+                    Tools.showLog("打印了"+i+"次");
+                }
+            }
+        }
+        //测试方法
+        {
+            Runnable t2=new Test2Thread();
+            Thread tt2=new Thread(t2);
+            tt2.start();//线程开始
+        }
+        //3.简写方法 匿名内部类
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //具体的操作
+            }
+        }).start();
+        //4.简写方法 lambda表达式
+        }
     /**
-     * java学习篇------------文件类File
+     * java学习篇8------------反射机制Reflection
+     */
+    private void myReflection() {
+//        http://www.cnblogs.com/lzq198754/p/5780331.html
+//        反射是在运行中  对于任意一个类  都能够知道这个类的所有属性和方法 对于任意一个对象，都能调用他的任意一个方法和属性
+//        为什么用反射？
+//        系统里不是所有类都是开放的。
+//        使用方法  只用知道包名和类名  而不用实例化。
+
+        //测试类，用于测试反射
+        class Demo {
+            //放射方法测试
+            void reflectionMethod() {
+                //不通过new生成对象的方式
+                //1.反序列化 2.克隆 3.反射
+
+                //2.1反射的方式
+                try {
+                    Class<?> reflectUser = Class.forName("aaa.bbb.ccc.User");//此处包名随意的
+                    User user2 = (User) reflectUser.newInstance();
+                    user2.setAge(22);
+                    user2.setName("小王");
+                    System.out.println(user2);
+
+		  // 2.2取得本类的全部属性  (import java.lang.reflect.Field;)(import java.lang.reflect.Modifier;)
+                    Field[] field = reflectUser.getDeclaredFields();
+                    for (Field f : field) {
+                        System.out.println("访问权限修饰符：" + Modifier.toString(f.getModifiers()));
+                        System.out.println("属性类型：" + f.getType());
+                        System.out.println("变量名字：" + f.getName());
+                    }
+                    //通过反射调用方法：（import java.lang.reflect.Method;）
+                    Method method = reflectUser.getMethod("show");
+                    method.invoke(reflectUser.newInstance());
+                    Method method1 = reflectUser.getMethod("show1", int.class, String.class);
+                    method1.invoke(reflectUser.newInstance(), 33, "小黄");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            class User {
+                private String name;
+                private int age;
+                public User() {
+                    super();
+                    // TODO Auto-generated constructor stub
+                }
+                public User(String name, int age) {
+                    super();
+                    this.name = name;
+                    this.age = age;
+                }
+                public String getName() {
+                    return name;
+                }
+                public void setName(String name) {
+                    this.name = name;
+                }
+                public int getAge() {
+                    return age;
+                }
+                public void setAge(int age) {
+                    this.age = age;
+                }
+                @Override
+                public String toString() {
+                    return "User [name=" + name + ", age=" + age + "]";
+                }
+
+                public void show() {
+                    System.out.println("这一定是一个假方法");
+                }
+
+                public void show1(int a, String b) {
+                    System.out.println("这一定是一个假方法" + a + b);
+                }
+            }
+        }
+        //需要注意反射的效率和风险，以后补充
+    }
+    /**
+     * java学习篇9------------文件类File
      */
     private void myFile() throws Exception {
 //        File file = new File("D" + File.separator + "路径");//文件地址
@@ -552,9 +583,173 @@ class MyJava {
 //        file.createNewFile();//如果File代表文件，则创建一个空文件
 //        file.delete();//删除文件或目录(如果目录下包含子目录或文件，则不能删除)
     }
-
     /**
-     * java学习篇------------集合List
+     * java学习篇12------------Lambda表达式
+     */
+    private static class myLambda{
+//        Lambda简介#
+//        Lambda 表达式是 JDK8 的一个新特性，可以取代大部分的匿名内部类，写出更优雅的 Java 代码，尤其在集合的遍历和其他集合操作中，可以极大地优化代码结构。
+//        JDK 也提供了大量的内置函数式接口供我们使用，使得 Lambda 表达式的运用更加方便、高效。
+//        对接口的要求#
+//        虽然使用 Lambda 表达式可以对某些接口进行简单的实现，但并不是所有的接口都可以使用 Lambda 表达式来实现。Lambda 规定接口中只能有一个需要被实现的方法，不是规定接口中只能有一个方法
+//        jdk 8 中有另一个新特性：default， 被 default 修饰的方法会有默认实现，不是必须被实现的方法，所以不影响 Lambda 表达式的使用。
+//        @FunctionalInterface#
+//        修饰函数式接口的，要求接口中的抽象方法只有一个。 这个注解往往会和 lambda 表达式一起出现。
+//        Lambda 基础语法#
+//        我们这里给出六个接口，后文的全部操作都利用这六个接口来进行阐述。
+
+//        这里是测试方法
+        {
+            LambdaInter1 lambdaInter1=()->{Tools.showLog("212");};
+            lambdaInter1.method();
+
+            LambdaInter2 lambdaInter2=(int a,String b)->{Tools.showLog("2121");};
+            lambdaInter2.method(12,"1221");
+
+            //线程简写式runnable  个人理解  但是并不简单啊  还不好理解
+            Runnable runnable=()->{};//run方法写在花括号
+            runnable.run();
+            new Thread(runnable).start();
+
+            //有待加深理解
+        }
+//        语法形式为 () -> {}，其中 () 用来描述参数列表，{} 用来描述方法体，-> 为 lambda运算符 ，读作(goes to)。
+        //先定义两个接口
+         interface LambdaInter1{
+            void method();
+        }
+        interface LambdaInter2{
+            void method(int a,String sss);
+        }
+    }
+    /**
+     * java学习篇10------------java面向对象
+     */
+    class myObject {
+        //定义的常量 变量
+        private final int PI = 21;
+        private final String TX = "腾讯";
+        private String mName, mBlance, mAccount, mMoney;
+        private int a, b, c;
+        private ArrayList<Integer> MList;
+
+        //    三，引用变量的赋值
+        {
+            String s = "hello";
+            String t = s;
+            s = "world";
+//    对于引用数据类型  就是对象  数组  String
+            if (s.equals(t)) {
+                Log.e("tag", "我比较的是值");
+            }
+            if (s == t) {
+                Log.e("tag", "我比较的是空间地址");
+            }
+/*
+ 关于equals与==的区别从以下几个方面来说：
+（1） 如果是基本类型比较，那么只能用==来比较，不能用equals
+（2） 对于基本类型的包装类型，比如Boolean、Character、Byte、Shot、Integer、Long、Float、Double等的引用变量，
+     ==是比较地址的，而equals是比较内容的。
+（3） 注意：对于String(字符串)、
+     StringBuffer(线程安全的可变字符序列)、
+     StringBuilder(可变字符序列)这三个类作进一步的说明。
+     */
+        }
+
+        ;//默认的构造方法
+
+        //构造（没有返回值）
+        public myObject() {
+        }
+
+        ;//单参数的构造方法
+
+        public myObject(String a) {
+        }
+
+        ;//多参数的构造方法
+
+        public myObject(int b, double c) {
+        }
+
+        //自动生成的构造方法，一般用于对象数组
+        public myObject(String mName, String mBlance, String mAccount, String mMoney, int a, int b, int c, ArrayList<Integer> MList) {
+            this.mName = mName;
+            this.mBlance = mBlance;
+            this.mAccount = mAccount;
+            this.mMoney = mMoney;
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.MList = MList;
+        }
+
+        ;
+
+        //普通方法，非构造方法
+        public void JavaThree(int a) {
+        }
+
+
+/*面向对象的三大特征：封装 继承  多态  还有六大原则 自己看
+---------封装：
+讲一个类的属性私有化，同时对外提供公共的访问方法。封装的作用：为了保护数据安全。
+---------继承：
+就是以现有的类为模板，扩展新功能，创建出新的类的过程。其中，模板类被称为父类或者基类，扩展的类被称为子类或者派生类
+              子类会完全的继承父类中的所有非私有的数据成员，而且子类无法选择性的继承父类。
+              Java中的继承是单继承，也就说一个子类只能直接继承自一个父类。
+              继承只能继承属性  不能继承值。
+----------多态：
+编译时数据类型和运行时的数据类型不一致，就会发生多态。父类对象的位置可以用一个子类对象来代替，实际运行时，活动的就是这一个子类对象。
+                 大前提 ：必须有继承或者实现，通常还有一个前提 存在复写
+      多态也叫里式替换原则：子类对象完美替换父类对象并且对程序本身不造成任何伤害
+
+      多态：对外一个接口，内部多种实现分为编译时多态和运行时多态
+             编译时多态：分为重写和重载
+             运行时多态：向上转型和向下转型
+
+              向上转型：Animal   animal  =new  Dog();
+              调用的是父类的 和子类复写的   不能调用子类的  说到底父类的（但是子类复写，相当于扩展了方法）
+
+              向下转型：Dog   dog  = (Dog)animal;（必须经过向上转型，拿到Animal的实例）
+              调用的是子类所有和父类非私有，也就是子类继承的  说到底还是子类的（这样来说，用向上转型的作用似乎更大）
+
+              Dog   dog  =new Animal();
+              此转型有待参考
+              */
+
+//    二，关于修饰符的访问权限
+//    类型            无修饰符   private    protected    public
+//    同类              是        是           是         是
+//    同一包中的子类      是                    是          是
+//    同一包中的非子类    是                    是          是
+//    不同包中的子类                           是           是
+//    不同包中的非子类                                      是
+
+        //方法的重载  (方法名相同，参数列表不同)
+        public void JavaThree(String a, int b) {
+        }
+
+        //    父类：Throwable     子类：异常 Exception     子类：错误 Error
+        public void method() throws Throwable {
+            int a = 1 + 2;
+            try {
+                /*有可能出异常的语句*/
+            } catch (NullPointerException e) {
+                e.getMessage();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.toString();
+            } catch (Exception e) {
+                e.toString();
+                throw e;//抛出到头方法
+            } finally {
+                a = 56;
+            }
+
+        }
+    }
+    /**
+     * java学习篇11------------集合List
      */
     private class myList {
         /*--------常用集合介绍：*/ {
@@ -841,8 +1036,33 @@ class MyJava {
             }
         }
     }
-    
-}
+    /**
+     * java学习篇13------------IntStream无限流
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private class myNewJava{
+        //volatile申明一个共享数据（变量）
+        volatile int asa=90;
 
+        //Intstream无限流
+        {
+            IntStream.range(1,5).forEach(a->Tools.showLog("adahdhada"));
+        }
+
+        //synchronized 同步锁  最好用写法一
+        void method() {
+            synchronized(this) {
+                //同步方法
+            }
+        }
+        //synchronized 同步锁   写法2 简写方式
+        synchronized void method2(){
+
+        }
+
+//        有time的时候在了解
+    }
+
+}
 
 
