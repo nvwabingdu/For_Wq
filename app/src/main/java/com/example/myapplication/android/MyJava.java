@@ -32,6 +32,8 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +47,14 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -61,9 +71,9 @@ class MyJava {
      */
     public void indentifier() {
 //一.标识符
-//    1.标识符由 字母  数字  下划线 _  美元符号 $组成
+//    1.标识符由 字母  数字  _  $  组成
 //    2.数字不能作为开头，区别大小写，长度没有限制，不能有其他字符，不允许插入空白，不允许占用其他特殊关键字
-//    3.java源代码使用的是Unicode（65536）,比ASCII码（255）大的多。因为汉字是字符，所以“这是一个标识符”是正确的标识符
+//    3.java源代码使用的是Unicode（65536）,比ASCII码（255）大的多。
 
 //    4.类名，接口名     HelloWrold   Customer    SortClass
 //    5.方法名，变量名   setName      getAdress   balance
@@ -73,13 +83,13 @@ class MyJava {
 //    基本数据类型
 //    类型  类型    默认值     位数
 //    整数  byte   (byte)0  （8位 1字节）  -2^7~2^7-1     (-128~127)
-//         short  (short)0 （16位 2字节） -2^15~-2^15-1  (-32768~32767)
-//                           int(0)   （32位 4字节） -2^31~-2^31-1  (-2147483648~2147483647)
+//          short  (short)0 （16位 2字节） -2^15~-2^15-1  (-32768~32767)
+//          int(0)   （32位 4字节） -2^31~-2^31-1  (-2147483648~2147483647)
 //                                    2(10进制)   077（8进制）  0XBABE（16进制）
-//                           long(0l)  （64位 8字节） -2^63~-2^63-1  (-9223372036854775808~9223372036854775807)
+//          long(0l)  （64位 8字节） -2^63~-2^63-1  (-9223372036854775808~9223372036854775807)
 //                                    2l（10进制长整型）  2L  077L（8进制长整型）   0xBABEL（16进制长整型）
 
-//                  浮点数
+//     浮点数
 //                           float(0.0f)   （32位 4字节）  1.4e-45f~3.4028235e+38f
 //                                  1.43f  1.343F
 //                           double(0.0)  （64位 8字节）  4.9e-324d~1.7976931348623157e+308d
@@ -179,6 +189,7 @@ class MyJava {
 //        场景8：求相反数 (~x+1)
         }
     }
+
     /**
      * java学习篇2------------循环，if，foreach
      */
@@ -214,6 +225,7 @@ class MyJava {
 //            /*要做什么操作*/
 //        }
     }
+
     /**
      * java学习篇3------------数组Arrays
      */
@@ -246,6 +258,7 @@ class MyJava {
         }
 
     }
+
     /**
      * java学习篇4------------常用类
      */
@@ -277,6 +290,7 @@ class MyJava {
         {
             Random random = new Random();
             random.nextInt(10);
+            new Random().nextDouble();//简写
         }
 
         /*Arrays*/
@@ -294,6 +308,7 @@ class MyJava {
             m2.lookingAt();//返回false,因为\d+不能匹配前面的aa
         }
     }
+
     /**
      * java学习篇5------------IO流
      */
@@ -381,6 +396,7 @@ class MyJava {
 
 
     }
+
     /**
      * java学习篇6------------序列化Serializable
      */
@@ -397,10 +413,11 @@ class MyJava {
         }
 
     }
+
     /**
      * java学习篇7------------多线程Thread
      */
-    private void myThread() {
+    private class myThread {
 //                       ④阻塞状态
 //①新建状态	②就绪状态	③运行状态 	⑤终止状态
 //                线程的创建
@@ -410,37 +427,54 @@ class MyJava {
 //        2)  建立子类对象的同时线程也被创建。
 //        3)通过调用start方法开启线程。
 
-//        线程创建的两种方式
+        //        线程创建的两种方式
 //        1.继承Thread类
-        class TestThread extends Thread{
+        class TestThread extends Thread {
             //run方法
-            public void run(){
-                for(int i=0;i<10;i++){
-                    Tools.showLog("打印"+i+"次");
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    Tools.showLog("打印" + i + "次");
                 }
                 try {
                     sleep(500);//线程睡觉
-                    wait(1000);//线程等待
-                    notify();//唤醒等待线程
+                    wait(1000);//线程等待   和notify  notifyall是一对，先wait 在notify
+                    notify();//唤醒某个等待线程
                     notifyAll();//唤醒所有等待线程
                     setPriority(Thread.NORM_PRIORITY);//5
-                    join();//加入方法，参加
+                    join();
+                    //t.join();//调用join方法，等待线程t执行完毕
+                    // t.join(1000); //等待 t 线程，等待时间是1000毫秒。
                     yield();//强制终止线程  线程的礼让
                     interrupt();//中断线程
+                    interrupted();//判断是否被中断，并清除当前中断状态
+                    isInterrupted();//判断是否被中断
+                    //stop已经过时不再使用，因为用stop会导致数据异常。
+                    //interrupt();//为线程设置中断标志，不会立即结束线程
+                    int i = 0;
+                    while (true) {
+                        i++;
+                        if (i == 90) {
+                            this.interrupt();//设置中断标志
+                        }
+                        if (this.isInterrupted()) {//是否有中断标记，有的话就结束？？？？  不如直接设置！！！
+                            break;
+                        }
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
+
         //测试和线程的方法
         {
-            TestThread testThread=new TestThread();
+            TestThread testThread = new TestThread();
             try {
                 testThread.start();//启动线程
                 testThread.getId();
                 testThread.getName();
                 testThread.getPriority();
-                testThread.interrupt();;
+                testThread.interrupt();
                 testThread.isAlive();//测试当前线程是否在活动
                 testThread.setDaemon(true);
                 testThread.wait(100);
@@ -452,31 +486,154 @@ class MyJava {
                 e.printStackTrace();
             }
         }
+
         // 2.实现Runnable接口
-        class Test2Thread implements Runnable{
-            int i=0;
+        class Test2Thread implements Runnable {
+            int i = 0;
+
             @Override
             public void run() {
-                while(true){
-                    Tools.showLog("打印了"+i+"次");
+                while (true) {
+                    Tools.showLog("打印了" + i + "次");
                 }
             }
         }
+
         //测试方法
         {
-            Runnable t2=new Test2Thread();
-            Thread tt2=new Thread(t2);
+            Runnable t2 = new Test2Thread();
+            Thread tt2 = new Thread(t2);
             tt2.start();//线程开始
         }
+
         //3.简写方法 匿名内部类
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //具体的操作
-            }
-        }).start();
-        //4.简写方法 lambda表达式
+        {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //具体的操作
+                }
+            }).start();
+            //4.简写方法 lambda表达式
+            Runnable runnable = () -> {
+                //run方法写在这里？
+            };
+            runnable.run();
         }
+
+        //synchronized 同步锁  最好用此种写法
+        void method11() {
+            synchronized (this) {
+                //同步方法写在这里
+            }
+        }
+
+        //synchronized 同步锁   写法2 简写方式
+        synchronized void method22() {
+        }
+
+        //------------------------线程池
+
+        //创建方式
+        {
+            Executors.newCachedThreadPool();        //创建一个缓冲池，缓冲池容量大小为Integer.MAX_VALUE
+            Executors.newSingleThreadExecutor();   //创建容量为1的缓冲池
+            Executors.newFixedThreadPool(10);    //创建固定容量大小的缓冲池
+            Executors.newScheduledThreadPool(2);//创建一个定长线程池，支持定时及周期性任务执行
+            Executors.newScheduledThreadPool(2).schedule(new Runnable() {
+                @Override
+                public void run() {
+                    //定时为3秒
+                }
+            }, 3, TimeUnit.SECONDS);
+        }
+
+        {
+            //使用方式
+            ExecutorService executorService = Executors.newCachedThreadPool();
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //run方法
+                }
+            });
+        }
+
+        //简写方式  直接开多线程
+        {
+            Executors.newCachedThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    //run方法
+                }
+            });
+        }
+
+        //一些说明
+        class PoolThread extends ThreadPoolExecutor {
+            public PoolThread(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+                super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+            }
+           /* corePoolSize：核心池的大小，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；
+            maximumPoolSize：线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；
+            keepAliveTime：表示线程没有任务执行时最多保持多久时间会终止。默认情况下，只有当线程池中的线程数大于corePoolSize时，keepAliveTime才会起作用，直到线程池中的线程数不大于corePoolSize，即当线程池中的线程数大于corePoolSize时，如果一个线程空闲的时间达到keepAliveTime，则会终止，直到线程池中的线程数不超过corePoolSize。但是如果调用了allowCoreThreadTimeOut(boolean)方法，在线程池中的线程数不大于corePoolSize时，keepAliveTime参数也会起作用，直到线程池中的线程数为0；
+            unit：参数keepAliveTime的时间单位，有7种取值，在TimeUnit类中有7种静态属性：
+            复制代码
+            TimeUnit.DAYS;               //天
+            TimeUnit.HOURS;             //小时
+            TimeUnit.MINUTES;           //分钟
+            TimeUnit.SECONDS;           //秒
+            TimeUnit.MILLISECONDS;      //毫秒
+            TimeUnit.MICROSECONDS;      //微妙
+            TimeUnit.NANOSECONDS;       //纳秒
+            复制代码
+            workQueue：一个阻塞队列，用来存储等待执行的任务，这个参数的选择也很重要，会对线程池的运行过程产生重大影响，一般来说，这里的阻塞队列有以下几种选择：
+            1）ArrayBlockingQueue：基于数组的先进先出队列，此队列创建时必须指定大小；
+　　        2）LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定此队列大小，则默认为Integer.MAX_VALUE；
+　　        3）synchronousQueue：这个队列比较特殊，它不会保存提交的任务，而是将直接新建一个线程来执行新来的任务。
+　　        ArrayBlockingQueue和PriorityBlockingQueue使用较少，一般使用LinkedBlockingQueue和Synchronous。线程池的排队策略与BlockingQueue有关。
+
+            threadFactory：线程工厂，主要用来创建线程；
+            handler：表示当拒绝处理任务时的策略，有以下四种取值：
+            ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。
+            ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。
+            ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
+            ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务*/
+
+            volatile int runState;
+            static final int RUNNING = 0;
+            static final int SHUTDOWN = 1;
+            static final int STOP = 2;
+            static final int TERMINATED = 3;
+
+            /*runState表示当前线程池的状态，它是一个volatile变量用来保证线程之间的可见性；
+              下面的几个static final变量表示runState可能的几个取值。
+              当创建线程池后，初始时，线程池处于RUNNING状态；
+              如果调用了shutdown()方法，则线程池处于SHUTDOWN状态，此时线程池不能够接受新的任务，它会等待所有任务执行完毕；
+              如果调用了shutdownNow()方法，则线程池处于STOP状态，此时线程池不能接受新的任务，并且会去尝试终止正在执行的任务；
+              当线程池处于SHUTDOWN或STOP状态，并且所有工作线程已经销毁，任务缓存队列已经清空或执行结束后，线程池被设置为TERMINATED状态。*/
+
+            //某些参数和方法：
+            // private final BlockingQueue<Runnable> workQueue;              //任务缓存队列，用来存放等待执行的任务
+            private final ReentrantLock mainLock = new ReentrantLock();   //线程池的主要状态锁，对线程池状态（比如线程池大小
+            //、runState等）的改变都要使用这个锁
+            // private final HashSet<Worker> workers = new HashSet<Worker>();  //用来存放工作集
+            private volatile long keepAliveTime;    //线程存活时间
+            private volatile boolean allowCoreThreadTimeOut;   //是否允许为核心线程设置存活时间
+            private volatile int corePoolSize;     //核心池的大小（即线程池中的线程数目大于这个参数时，提交的任务会被放进任务缓存队列）
+            private volatile int maximumPoolSize;   //线程池最大能容忍的线程数
+            private volatile int poolSize;       //线程池中当前的线程数
+            private volatile RejectedExecutionHandler handler; //任务拒绝策略
+            private volatile ThreadFactory threadFactory;   //线程工厂，用来创建线程
+            private int largestPoolSize;   //用来记录线程池中曾经出现过的最大线程数
+            private long completedTaskCount;   //用来记录已经执行完毕的任务个数
+
+
+        }
+
+
+    }
+
     /**
      * java学习篇8------------反射机制Reflection
      */
@@ -502,7 +659,7 @@ class MyJava {
                     user2.setName("小王");
                     System.out.println(user2);
 
-		  // 2.2取得本类的全部属性  (import java.lang.reflect.Field;)(import java.lang.reflect.Modifier;)
+                    // 2.2取得本类的全部属性  (import java.lang.reflect.Field;)(import java.lang.reflect.Modifier;)
                     Field[] field = reflectUser.getDeclaredFields();
                     for (Field f : field) {
                         System.out.println("访问权限修饰符：" + Modifier.toString(f.getModifiers()));
@@ -523,27 +680,34 @@ class MyJava {
             class User {
                 private String name;
                 private int age;
+
                 public User() {
                     super();
                     // TODO Auto-generated constructor stub
                 }
+
                 public User(String name, int age) {
                     super();
                     this.name = name;
                     this.age = age;
                 }
+
                 public String getName() {
                     return name;
                 }
+
                 public void setName(String name) {
                     this.name = name;
                 }
+
                 public int getAge() {
                     return age;
                 }
+
                 public void setAge(int age) {
                     this.age = age;
                 }
+
                 @Override
                 public String toString() {
                     return "User [name=" + name + ", age=" + age + "]";
@@ -560,6 +724,7 @@ class MyJava {
         }
         //需要注意反射的效率和风险，以后补充
     }
+
     /**
      * java学习篇9------------文件类File
      */
@@ -583,45 +748,7 @@ class MyJava {
 //        file.createNewFile();//如果File代表文件，则创建一个空文件
 //        file.delete();//删除文件或目录(如果目录下包含子目录或文件，则不能删除)
     }
-    /**
-     * java学习篇12------------Lambda表达式
-     */
-    private static class myLambda{
-//        Lambda简介#
-//        Lambda 表达式是 JDK8 的一个新特性，可以取代大部分的匿名内部类，写出更优雅的 Java 代码，尤其在集合的遍历和其他集合操作中，可以极大地优化代码结构。
-//        JDK 也提供了大量的内置函数式接口供我们使用，使得 Lambda 表达式的运用更加方便、高效。
-//        对接口的要求#
-//        虽然使用 Lambda 表达式可以对某些接口进行简单的实现，但并不是所有的接口都可以使用 Lambda 表达式来实现。Lambda 规定接口中只能有一个需要被实现的方法，不是规定接口中只能有一个方法
-//        jdk 8 中有另一个新特性：default， 被 default 修饰的方法会有默认实现，不是必须被实现的方法，所以不影响 Lambda 表达式的使用。
-//        @FunctionalInterface#
-//        修饰函数式接口的，要求接口中的抽象方法只有一个。 这个注解往往会和 lambda 表达式一起出现。
-//        Lambda 基础语法#
-//        我们这里给出六个接口，后文的全部操作都利用这六个接口来进行阐述。
 
-//        这里是测试方法
-        {
-            LambdaInter1 lambdaInter1=()->{Tools.showLog("212");};
-            lambdaInter1.method();
-
-            LambdaInter2 lambdaInter2=(int a,String b)->{Tools.showLog("2121");};
-            lambdaInter2.method(12,"1221");
-
-            //线程简写式runnable  个人理解  但是并不简单啊  还不好理解
-            Runnable runnable=()->{};//run方法写在花括号
-            runnable.run();
-            new Thread(runnable).start();
-
-            //有待加深理解
-        }
-//        语法形式为 () -> {}，其中 () 用来描述参数列表，{} 用来描述方法体，-> 为 lambda运算符 ，读作(goes to)。
-        //先定义两个接口
-         interface LambdaInter1{
-            void method();
-        }
-        interface LambdaInter2{
-            void method(int a,String sss);
-        }
-    }
     /**
      * java学习篇10------------java面向对象
      */
@@ -661,13 +788,11 @@ class MyJava {
         //构造（没有返回值）
         public myObject() {
         }
-
-        ;//单参数的构造方法
+        //单参数的构造方法
 
         public myObject(String a) {
         }
-
-        ;//多参数的构造方法
+        //多参数的构造方法
 
         public myObject(int b, double c) {
         }
@@ -748,99 +873,61 @@ class MyJava {
 
         }
     }
+
     /**
      * java学习篇11------------集合List
      */
     private class myList {
-        /*--------常用集合介绍：*/ {
-//1	Collection	是存放一组单值的最大接口，所谓的单值是指集合中的每个元素都是一个对象。一般很少会直接使用此接口直接操作。
-//2	List	    是Collection接口的子接口，也是最常用的接口，此接口对Collection接口进行了大量的扩充，里面的内容是允许重复的。
-//3	Set	        是Collection接口的子类，没有对Collection接口进行扩充，里面不允许存放重复内容。
-//4	Map	        Map是存放一对值的最大接口，即，接口中的每个元素都是一对，以keyvalue的形式保存。
-//5	Iterator	集合的输出接口，用于输出集合中的内容，只能进行从前到后的单向输出。
-//6	ListIterator	是Iterator的子接口，可以进行双向输出。
-//7	Enumeration	是最早的输出接口，用于输出指定集合中的内容。
-//8	SortedSet	单值的排序接口，实现此接口的集合类，里面的内容是可以排序的，使用比较器排序。
-//9	SortedMap	存放一对值的排序接口，实现此接口的集合类，里面的内容按照key排序，使用比较器排序。
-//10	Queue	队列接口，此接口的子类可以实现队列操作。
-//11	Map.Entry	Map.Entry的内部接口，每个Map.Entry对象都保存着一对keyvalue的内容，每个Map接口中都保存多个Map.Entry接口实例。
-        }
-
-        /*集合继承关系*/ {
+        /*集合继承关系*/
 //Collection 接口的接口 对象的集合（单列集合）
 //├——-List 接口：元素按进入先后有序保存，可重复
-//│—————-├ LinkedList（几乎不用） 接口实现类， 链表， 插入删除， 没有同步， 线程不安全，查询慢，增删快
+//│—————-├ LinkedList 接口实现类， 链表， 插入删除， 没有同步， 线程不安全，查询慢，增删快
 //│—————-├ ArrayList（常用） 接口实现类， 数组， 随机访问， 没有同步， 线程不安全，查询快，增删慢
-//│—————-└ Vector（过时） 接口实现类 数组， 同步， 线程安全,  性能较低，查询快，增删慢
+//│—————-└ Vector 接口实现类 数组， 同步， 线程安全,  性能较低，查询快，增删慢
 //│ ———————-└ Stack 是Vector类的实现类
 //└——-Set 接口： 仅接收一次，不可重复，并做内部排序 所有的重复内容是靠hashCode()和equals()两个方法区分的
-//├—————-└HashSet 使用hash表（数组）存储元素 散列存放 无序
+//├—————-└HashSet（常用）使用hash表（数组）存储元素 散列存放 无序
 //│————————└ LinkedHashSet 链表维护元素的插入次序
-//└ —————-TreeSet 底层实现为二叉树，元素排好序 （使用TreeSet则对象所在的类必须实现Compable接口，然后再Arrays.sort()）
+//└ —————-TreeSet（常用） 底层实现为二叉树，元素排好序 （使用TreeSet则对象所在的类必须实现Compable接口，然后再Arrays.sort()）
 //
 //Map 接口 键值对的集合 （双列集合）
-//├———Hashtable 接口实现类， 同步， 线程安全
-//├———HashMap 接口实现类 ，没有同步， 线程不安全-
+//├———Hashtable 接口实现类， 同步， 线程安全  速度慢 key不允许重复
+//├———HashMap （常用）接口实现类 ，没有同步， 线程不安全  快
 //│—————–├ LinkedHashMap 双向链表和哈希表实现
 //│—————–└ WeakHashMap
-//├ ——–TreeMap 红黑树对所有的key进行排序
+//├ ——–TreeMap （常用）红黑树对所有的key进行排序 key不允许重复
 //└———IdentifyHashMap
-        }
 
-        /*迭代器*/ {
+
+        /*迭代器 用不上 了解下就可以了*/ {
             //Iterator接口的操作原理：Iterator是专门的迭代输出接口，
-            // 所谓的迭代输出就是将元素一个个进行判断，判断其是否有内容，如果有内容则把内容取出
-            // public boolean hasNext()	普通	判断是否有下一个值
-            // public E next()	普通	取出当前元素
-            // public void remove()	普通	移除当前元素
             //使用迭代器的时候  就不能用自己的删除方法
-            List<String> all = new ArrayList<String>();// 实例化List接口
-            all.add("hello");            // 增加元素
-            all.add("_");                // 增加元素
-            all.add("world");            // 增加元素
-            Iterator<String> iter = all.iterator();    // 直接实例化Iterator接口S
-            while (iter.hasNext()) {            // 依次判断
-                System.out.print(iter.next() + "、");// 输出内容
+            List<String> all = new ArrayList<String>();
+            all.add("hello");
+            // Iterator接口
+            Iterator<String> iter = all.iterator();
+            while (iter.hasNext()) {
+               iter.next();//取出当前元素
+               iter.remove();//移除
             }
-            //Iterator接口的主要功能是由前向后单向输出，
-            // 而此时如果想实现由后向前或是由前向后的双向输出，则就必须使用Iterator的子接口 —— ListIterator
-            // public boolean hasNext()	普通	判断是否有下一个值
-            // public E next()	普通	取出当前元素
-            // public void remove()	普通	移除当前元素
-            // public void add(E o)	普通	将指定元素增加集合
-            // public boolean hasPrevious()	普通	判断是否有上一个元素
-            // public E previous()	普通	取出当前元素
-            // public int nextIndex()	普通	返回下一个元素的索引号
-            // public int previousIndex()	普通	返回上一个元素的索引号
-            // public void set(E o)	普通	替换元素
-
-
-            List<String> all1 = new ArrayList<String>();    // 实例化List接口
-            all.add("hello");                // 增加元素
-            all.add("_");                // 增加元素
-            all.add("world");                // 增加元素
-            ListIterator<String> iter1 = all.listIterator();    // 实例化ListIterator接口
-            System.out.print("由前向后输出：");        // 信息输出
-            while (iter.hasNext()) {            // 由前向后输出
-                String str = iter.next();        // 取出内容
-                System.out.print(str + "、");        // 输出内容
-                iter1.set("LI-" + str);        // 替换元素
+            // ListIterator接口
+            ListIterator<String> iter1 = all.listIterator();
+            while (iter1.hasNext()) {  //判断是否有下一个元素 由前向后输出
+                iter1.set("");// 替换元素
             }
-            System.out.print("\n由后向前输出：");        // 信息输出
-            iter1.add("LXH");                // 增加元素
-            while (iter1.hasPrevious()) {            // 由前向后输出
-                String str = iter1.previous();        // 取出内容
-                System.out.print(str + "、");        // 输出内容
+            while (iter1.hasPrevious()) {  // 判断是否有上一个元素  由前向后输出
+                iter1.previous();        // 取出内容
+                iter1.add("");
+                iter1.nextIndex();//返回下一个元素的索引号
+                iter1.previousIndex();//返回上一个元素的索引号
             }
         }
 
         /*foreach的操作*/ {
             List<String> all = new ArrayList<String>();    // 实例化List接口
             all.add("hello");                // 增加元素
-            all.add("_");                    // 增加元素
-            all.add("world");                // 增加元素
             for (String str : all) {                // 输出foreach输出
-                System.out.print(str + "——");        // 输出内容
+             //做操作
             }
         }
         //和其他语言使用ASCII码字符集不同，java使用Unicode字符集来表示字符串和字符。
@@ -873,34 +960,18 @@ class MyJava {
             /*虽然存入的时候是KEY  和 VALUE 两个对象，但是最后还是以Map.Entry对象保存在集合中的*/
 
             //Map接口的常用子类：
-            // HashMap：无序存放的，是新的操作类，key不允许重复。不安全，异步操作，速度快，key和value可以设置为mull
+            // HashMap：无序存放的，是新的操作类，key不允许重复。不安全，异步操作，速度快，key和value可以设置为null
             Map<String, String> map = new HashMap<String, String>();    // key和value是String
             // MAP增加元素：
-            map.put("mldn", "www.mldn.cn");
-            map.put("zhinangtuan", "www.zhinangtuan.net.cn");
-            // Map取出内容 （根据Key取出Value）
-            String val = map.get("mldn");    // 根据key求出value
-            System.out.println("取出的内容是:" + val);// 输出Map，调用toString()
-            // 判断KEY是否存在：
-            if (map.containsKey("mldn")) {        // 查找指定的key是否存在
-                System.out.println("搜索的key存在！");
-            } else {
-                System.out.println("搜索的key不存在！");
-            }
-            //判断Value是否存在：
-            if (map.containsValue("www.mldn.cn")) {    // 查找指定的value是否存在
-                System.out.println("搜索的value存在！");
-            } else {
-                System.out.println("搜索的value不存在!");
-            }
-            //把Key变成Set集合在输出：
-            Set<String> keys = map.keySet();
-            // 得到全部的key
-            Iterator<String> iter = keys.iterator();        // 实例化Iterator
+            map.put("mldn", "www.mldn.cn");//放入数据
+            map.get("mldn");    // 根据key求出value
+            map.containsKey("mldn");       // 查找指定的key是否存在
+            map.containsValue("www.mldn.cn");   // 查找指定的value是否存在
+            Set<String> keys = map.keySet(); // 得到全部的key
+            Iterator<String> iter = keys.iterator(); // 实例化Iterator
             System.out.print("全部的key：");            // 输出信息
             while (iter.hasNext()) {                // 迭代输出全部的key
                 String str = iter.next();            // 取出集合的key
-                System.out.print(str + "、");        // 输出内容
             }
             //把Value变成Collection集合在输出：
             Collection<String> values = map.values();
@@ -918,8 +989,6 @@ class MyJava {
                 Map<String, String> map1 = null;
                 map = new TreeMap<String, String>();        // 实例化Map对象
                 map.put("A、mldn", "www.mldn.cn");            // 增加内容
-                map.put("C、zhinangtuan", "www.zhinangtuan.net.cn");// 增加内容
-                map.put("B、mldnjava", "www.mldnjava.cn");        // 增加内容
                 Set<String> keys1 = map1.keySet();            // 得到全部的key
                 Iterator<String> iter1 = keys.iterator();        // 实例化Iterator
                 while (iter1.hasNext()) {                // 迭代输出
@@ -929,7 +998,7 @@ class MyJava {
             }
         }
 
-        /*迭代器输出map的方法  不常用迭代吧*/ {
+        /*迭代器输出map的方法  不常用迭代吧 个人意见 */ {
             Map<String, String> map = null;        // 声明Map对象，指定泛型类型
             map = new HashMap<String, String>();        // 实例化Map对象
             map.put("mldn", "www.mldn.cn");                        // 增加内容
@@ -1036,32 +1105,158 @@ class MyJava {
             }
         }
     }
+
+    /**
+     * java学习篇12------------Lambda表达式
+     */
+    private static class myLambda {
+        //        Lambda简介#
+//        Lambda 表达式是 JDK8 的一个新特性，可以取代大部分的匿名内部类，写出更优雅的 Java 代码，尤其在集合的遍历和其他集合操作中，可以极大地优化代码结构。
+//        JDK 也提供了大量的内置函数式接口供我们使用，使得 Lambda 表达式的运用更加方便、高效。
+//        对接口的要求#
+//        虽然使用 Lambda 表达式可以对某些接口进行简单的实现，但并不是所有的接口都可以使用 Lambda 表达式来实现。Lambda 规定接口中只能有一个需要被实现的方法，不是规定接口中只能有一个方法
+//        jdk 8 中有另一个新特性：default， 被 default 修饰的方法会有默认实现，不是必须被实现的方法，所以不影响 Lambda 表达式的使用。
+//        @FunctionalInterface#
+//        修饰函数式接口的，要求接口中的抽象方法只有一个。 这个注解往往会和 lambda 表达式一起出现。
+//        Lambda 基础语法#
+//        我们这里给出六个接口，后文的全部操作都利用这六个接口来进行阐述。
+//        语法形式为 () -> {}，其中 () 用来描述参数列表，{} 用来描述方法体，-> 为 lambda运算符 ，读作(goes to)。
+// 先定义两个接口
+        interface LambdaInter1 {
+            void method();
+        }
+
+        interface LambdaInter2 {
+            void method(int a, String sss);
+        }
+
+        //        这里是测试方法
+        {
+            LambdaInter1 lambdaInter1 = () -> {
+                Tools.showLog("212");
+            };
+            lambdaInter1.method();
+
+            LambdaInter2 lambdaInter2 = (int a, String b) -> {
+                Tools.showLog("2121");
+            };
+            lambdaInter2.method(12, "1221");
+
+            //线程简写式runnable  个人理解  但是并不简单啊  还不好理解
+            Runnable runnable = () -> {
+            };//run方法写在花括号
+            runnable.run();
+            new Thread(runnable).start();
+
+            //有待加深理解
+        }
+
+    }
+
     /**
      * java学习篇13------------IntStream无限流
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private class myNewJava{
+    private class myNewJava {
         //volatile申明一个共享数据（变量）
-        volatile int asa=90;
+        volatile int asa = 90;
 
         //Intstream无限流
         {
-            IntStream.range(1,5).forEach(a->Tools.showLog("adahdhada"));
+            IntStream.range(1, 5).forEach(a -> Tools.showLog("adahdhada"));
+        }
+        //有time的时候在了解
+    }
+
+    /**
+     * java学习篇14------------网络编程Socket----http
+     */
+    private class myNet {
+        //简单说明一下，最基本的：利用socket技术  客户端传递一个数据  到服务器端打印出来
+        // 服务器端
+        private void serverMethod() throws Exception {
+            ServerSocket serversocket = new ServerSocket(7000);// 创建一个服务器端的socket
+            Socket socket = serversocket.accept();// 设置监听 并用socket接收  (接受请求)
+            // 1.socket的输入流 加入缓冲
+            DataInputStream dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            // 2.socket的输出流 加入缓冲
+            DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+
+            // 然后开始读取接受到的 socket信息
+            dos.writeDouble(dis.readDouble());
+            dos.flush();
+            socket.close();// 关闭socket
+            serversocket.close();// 关闭服务器端socket
         }
 
-        //synchronized 同步锁  最好用写法一
-        void method() {
-            synchronized(this) {
-                //同步方法
+        // 客户端
+        private void clientSocket() throws Exception {
+            //建立socket ip+端口号
+            Socket socket = new Socket("localhost", 7000);
+            // 1.socket的输入流 加入缓冲
+            DataInputStream dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            // socket的输出流（这里就用简写了）
+            DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+
+            dos.writeDouble(3000);
+            dos.flush();
+
+            System.out.println("服务器返回的计算面积为:" + dis.readDouble());
+            dos.writeInt(0);
+            dos.flush();
+
+            socket.close();
+        }
+
+        //线程池服务器端
+        public void SocketServerM() throws Exception {
+            int clientNo = 1;//客户端1号 用于标记是第几个客户端
+            ServerSocket serverSocket = new ServerSocket(7000);
+            ExecutorService exec = Executors.newCachedThreadPool();//创建一个缓冲池，缓冲池容量大小为Integer.MAX_VALUE
+            try {
+                while (true) {//不停的接受 某些客户端的消息
+                    Socket socket = serverSocket.accept();
+                    exec.execute(new ServerRunnable(socket, clientNo));//线程池启动 开始放入任务
+                    clientNo++;
+                }
+            } finally {
+                serverSocket.close();
             }
         }
-        //synchronized 同步锁   写法2 简写方式
-        synchronized void method2(){
 
+        //线程池服务器端的任务 runnable
+        class ServerRunnable implements Runnable {
+            private Socket socket;
+            private int clientNo;//标记是第几个客户端
+
+            public ServerRunnable(Socket socket, int clientNo) {
+                this.socket = socket;
+                this.clientNo = clientNo;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    DataInputStream dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                    DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                    do {
+                        dos.writeDouble(dis.readDouble());
+                        dos.flush();
+                    } while (dis.readInt() != 0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("与客户端" + clientNo + "通信结束");
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
-
-//        有time的时候在了解
     }
+
 
 }
 
