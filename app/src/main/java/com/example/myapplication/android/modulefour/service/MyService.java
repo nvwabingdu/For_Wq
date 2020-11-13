@@ -19,7 +19,7 @@ public class MyService extends Service {
         super.onCreate();
 //        Notification notification = new Notification(R.drawable,
 //                "有通知到来", System.currentTimeMillis());
-//        Intent notificationIntent = new Intent(this, MainActivity.class);
+//        Intent notificationIntent = new Intent(this, OneEventBusActivity.class);
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
 //                notificationIntent, 0);
 //        notification.setLatestEventInfo(this, "这是通知的标题", "这是通知的内容",

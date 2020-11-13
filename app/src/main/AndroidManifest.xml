@@ -1,21 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapplication">
-
+    <!--android:resizeableActivity="true"表示为支持多窗口模式-->
+    <!--最大版本为24的时候  上一设置不起作用   解决方法为  设置为只是竖屏-->
+    <!-- android:screenOrientation="portrait"表示为只是竖屏-->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="奇哥的APP"
+        android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".android.activity.MainActivity">
+        <!--volley框架：在 Android 6.0 中，我们取消了对 Apache HTTP 客户端的支持  需要用的话 要添加如下-->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <activity
+            android:name=".android.activity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".zqr.chapter2.myrecyclerview.RecyclerViewActivity"></activity>
+        <activity android:name=".zqr.chapter2.mycardview.CardViewActivity"></activity>
+        <activity android:name=".zqr.chapter2.mynotification.MyNotificationActivity"></activity>
+        <activity android:name=".zqr.chapter2.moontoolbar.ToolbarActivity"></activity>
+        <activity android:name=".zqr.moonpermissions.PermissonsActivity"></activity>
+        <activity android:name=".zqr.chapter1.mooncoordinatorlayout.CollapsingToolbarActivity"></activity>
+        <activity android:name=".zqr.chapter1.mooncoordinatorlayout.CoordinatorLayoutActivity"></activity>
+        <activity android:name=".zqr.chapter1.moondesignsupportlibrary.TextInputLayoutActivity"></activity>
+        <activity android:name=".zqr.chapter1.moondesignsupportlibrary.ShowSnackActivity"></activity>
+        <activity android:name=".zqr.chapter2.mytablayout.TablayoutActivity"></activity>
+        <activity android:name=".zqr.chapter3.moonviewslide.ViewslideActivity"></activity>
+        <activity android:name=".zqr.chapter3.mooncustomviewgroup.CosTomMyActivity"></activity>
+        <activity android:name=".zqr.chapter3.mooncustomview.InvaldTextActivity"></activity>
+        <activity android:name=".zqr.chapter3.mooncustomgroup.CostGrouppActivity"></activity>
+        <activity android:name=".zqr.chapter4.MyAsyncTaskActivity"></activity>
+        <activity android:name=".zqr.chapter5.moonokhttp3.OkHttpActivity"></activity>
+        <activity android:name=".zqr.chapter5.moonvolley.MyVolleyActivity"></activity>
+        <activity android:name=".zqr.chapter5.moonretrofit.MyRetrofitActivity"></activity>
+        <activity android:name=".zqr.chapter7.mooneventbus.OneEventBusActivity"></activity>
+        <activity android:name=".zqr.chapter7.mooneventbus.SecondActivity"></activity>
     </application>
+
+    <!--    网络权限-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--打电话的权限-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+
+
 
 </manifest>

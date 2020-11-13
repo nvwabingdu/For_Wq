@@ -1,6 +1,8 @@
 package com.example.myapplication.android;
 
 import android.app.Activity;
+import android.net.UrlQuerySanitizer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -32,8 +34,11 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,12 +53,16 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -313,6 +322,7 @@ class MyJava {
      * java学习篇5------------IO流
      */
     private void myIoStream() throws Exception {
+        // 记住，只要用到缓冲区，就要记得刷新。
         //字节流(8位)
         //1.字节输入流
         InputStream inputStream = new InputStream() {
@@ -322,13 +332,13 @@ class MyJava {
             }
         };
         //1.1  构造：（String name）（File file）（FileDescriptor fdObj）
-        FileInputStream fileInputStream = new FileInputStream("文件");
+        FileInputStream fileInputStream = new FileInputStream("文件");//文件流
         //1.2  构造：（InputStream in）（InputStream in, int size）
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);//缓冲流
         //1.3  构造：(InputStream in)
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
+        DataInputStream dataInputStream = new DataInputStream(inputStream);//数据流
         //1.4  构造：（InputStream in）
-        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);//对象流
 
 
         //2.字节输出流
@@ -364,7 +374,7 @@ class MyJava {
         //1.1
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         //1.1.1
-        FileReader fileReader = new FileReader("");
+        FileReader fileReader = new FileReader("");//文件写入流
         //1.2
         BufferedReader bufferedReader = new BufferedReader(reader);
 
@@ -388,7 +398,7 @@ class MyJava {
         //2.1
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
         //2.1.1
-        FileWriter fileWriter = new FileWriter("");
+        FileWriter fileWriter = new FileWriter("");//文件写出流
         //2.2
         BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
@@ -427,7 +437,7 @@ class MyJava {
 //        2)  建立子类对象的同时线程也被创建。
 //        3)通过调用start方法开启线程。
 
-        //        线程创建的两种方式
+        //        线程创建的方式
 //        1.继承Thread类
         class TestThread extends Thread {
             //run方法
@@ -504,6 +514,32 @@ class MyJava {
             Runnable t2 = new Test2Thread();
             Thread tt2 = new Thread(t2);
             tt2.start();//线程开始
+        }
+
+        //3. 实现Callable  好处有返回值   可以抛出异常  可以得到一个Future对象 用于监视线程，但会阻塞 直到得到结果
+        class Test3Thread implements Callable {
+
+            @Override
+            public Object call() throws Exception {
+                return null;
+            }
+
+        }
+
+        //测试方法
+        {
+            Test3Thread callThread = new Test3Thread();
+            ExecutorService mExe = Executors.newSingleThreadExecutor();
+            Future mfuture = mExe.submit(callThread);
+
+            try {
+                mfuture.get();//等待线程结束 并返回结果
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
 
         //3.简写方法 匿名内部类
@@ -630,6 +666,29 @@ class MyJava {
 
 
         }
+
+
+        //线程中断   在中断前  先睡10秒  然后中断？？？？
+        {
+//            Thread thread=new Thread();
+//            thread.start();
+//            TimeUnit.MICROSECONDS.sleep(1000);//使主线程休眠？？天才
+//            thread.interrupt();
+        }
+
+//        重入锁  ？？？   支持重进入
+{
+        Lock mLock=new ReentrantLock();
+        mLock.lock();
+        try {
+
+        }finally {
+           mLock.unlock();
+        }
+
+
+}
+
 
 
     }
@@ -907,8 +966,8 @@ class MyJava {
             // Iterator接口
             Iterator<String> iter = all.iterator();
             while (iter.hasNext()) {
-               iter.next();//取出当前元素
-               iter.remove();//移除
+                iter.next();//取出当前元素
+                iter.remove();//移除
             }
             // ListIterator接口
             ListIterator<String> iter1 = all.listIterator();
@@ -927,7 +986,7 @@ class MyJava {
             List<String> all = new ArrayList<String>();    // 实例化List接口
             all.add("hello");                // 增加元素
             for (String str : all) {                // 输出foreach输出
-             //做操作
+                //做操作
             }
         }
         //和其他语言使用ASCII码字符集不同，java使用Unicode字符集来表示字符串和字符。
@@ -1255,8 +1314,108 @@ class MyJava {
                 }
             }
         }
+
+
+        /*GET 请求获取Request-URI 所标识的资源；
+        POST 在Request-URI 所标识的资源后附加新的数据；
+        HEAD 请求获取由Request-URI 所标识的资源的响应消息报头；
+        PUT 请求服务器存储一个资源，并用Request-URI作为其标识；
+        DELETE 请求服务器删除Request-URI 所标识的资源；
+        TRACE 请求服务器回送收到的请求信息，主要用于测试或诊断；
+        CONNECT 保留将来使用；
+        OPTIONS 请求查询服务器的性能，或者查询不资源相关的选项和需求。*/
+
+        /*1xx：指示信息--表示请求已接收，继续处理
+        2xx：成功--表示请求已被成功接收、理解、接受
+        3xx：重定向--要完成请求必须迚行更迚一步的操作
+        4xx：客户端错误--请求有语法错误戒请求无法实现
+        5xx：服务器端错误--服务器未能实现合法的请求*/
+
+        /*200 OK 客户端请求成功
+        400 Bad Request 客户端请求有语法错误，丌能被服务器所理解
+        401 Unauthorized 请求未经授权，这个状态代码必须和WWW-Authenticate 报//头域一起使用
+        403 Forbidden 服务器收到请求，但是拒绝提供服务
+        404 Not Found 请求资源丌存在，eg：输入了错误的URL
+        500 Internal Server Error 服务器发生丌可预期的错误
+        503 Server Unavailable 服务器当前丌能处理客户端的请求，一段时间后， //可能恢复正常*/
+
+        URL url;
+
+        {
+            try {
+                url = new URL("wwww.dada.com");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setDoInput(true);
+                connection.setRequestMethod("GET");
+                connection.setRequestMethod("POST");
+                /*使用Http的Range头字段指定每条线程从文件的什么位置开始下载，下载到什么位置：
+                如：指定从文件的2M位置开始下载，下载的位置(4M-1byte)为止，代码——*/
+                connection.setRequestProperty("Range", "bytes=2097152-4194303");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+
+    /**
+     * java学习篇14------------异步操作----AsyncTask
+     */
+    private abstract class MyAcynvTask extends AsyncTask{
+        // 类中参数为3种泛型类型
+// 整体作用：控制AsyncTask子类执行线程任务时各个阶段的返回类型
+// 具体说明：
+        // a. Params：开始异步任务执行时传入的参数类型，对应excute（）中传递的参数
+        // b. Progress：异步任务执行过程中，返回下载进度值的类型
+        // c. Result：异步任务执行完成后，返回的结果类型，与doInBackground()的返回值类型保持一致
+// 注：
+        // a. 使用时并不是所有类型都被使用
+        // b. 若无被使用，可用java.lang.Void类型代替
+        // c. 若有不同业务，需额外再写1个AsyncTask的子类
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //主线程工作  一般做一些UI标记
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            //线程池中执行   onPreExecute之后  耗时操作  调用publishProgress来更新进度信息
+            // 可调用publishProgress（）显示进度, 之后将执行onProgressUpdate（）
+            publishProgress(this);//???
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Object[] values) {
+            super.onProgressUpdate(values);
+            //主线程执行   调用publishProgress时来将进度更新到 UI上
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            //主线程  收尾工作  更新UI
+        }
+
+
+
+        {
+            MyAcynvTask  myAcynvTask=new MyAcynvTask() {
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    return super.doInBackground(objects);
+                }
+            };
+            //
+            myAcynvTask.execute();
+            myAcynvTask.publishProgress();
+        }
+
+    }
 
 }
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/e1"
+        android:layout_margin="12dp"
+        android:background="#344223"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/a2"
+            android:orientation="horizontal"
+            android:layout_margin="30dp"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_gravity="center_vertical|center"
+                android:id="@+id/t1"
+                android:text="你好"
+                android:textSize="50dp"
+                android:textColor="#000fff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                >
+
+            </TextView>
+
+            <Button
+                android:id="@+id/b1"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </Button>
+            <CalendarView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </CalendarView>
+            <CheckBox
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </CheckBox>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </EditText>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </FrameLayout>
+            <GridView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </GridView>
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </ListView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </ImageView>
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </Switch>
+
+
+
+
+        </LinearLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

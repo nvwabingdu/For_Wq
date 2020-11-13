@@ -8,6 +8,7 @@ public class Single {
     //简单单例
     private static Single single = null;
     private Single() {}
+
     public static Single getInstance() {
         if (single == null) {
             synchronized (Single.class) {

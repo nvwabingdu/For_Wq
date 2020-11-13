@@ -11,9 +11,9 @@ public class mIntentDemo {
 //        intent.setClass(Context packageContext, OtherActivity.class);
 //        startActivity(intent);
 //
-//        //1.表示希望启动com.example.test_permission包中的com.example.test_permission.MainActivity
+//        //1.表示希望启动com.example.test_permission包中的com.example.test_permission.OneEventBusActivity
 //        Intent intent = new Intent();
-//        intent.setClassName("com.example.test_permission", "com.example.test_permission.MainActivity");
+//        intent.setClassName("com.example.test_permission", "com.example.test_permission.OneEventBusActivity");
 //        startActivity(intent);
 //
 //        //2.

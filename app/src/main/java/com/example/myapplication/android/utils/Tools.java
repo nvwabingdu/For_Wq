@@ -3,6 +3,7 @@ package com.example.myapplication.android.utils;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.myapplication.R;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

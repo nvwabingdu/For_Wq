@@ -2,11 +2,21 @@ package com.example.myapplication.android.utils;
 
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 /**
@@ -40,7 +50,6 @@ class UtilsFile {
         }
     }
 
-
     /**
      * @param txtFilePath 一个txt文件路径
      * @param content     io流中乱码的文字
@@ -61,7 +70,6 @@ class UtilsFile {
             }
         }
     }
-
 
     public static void creatFile(String filePath) throws Exception {
         File f = new File(filePath);
@@ -84,7 +92,6 @@ class UtilsFile {
         f.setReadOnly();//设置为只读
 
     }
-
 
     /**
      * @param filePath
@@ -110,7 +117,6 @@ class UtilsFile {
         return fList;
     }
 
-
     /**
      * @param filePath
      * @param dirPath
@@ -132,7 +138,6 @@ class UtilsFile {
         return false;
     }
 
-
     /**
      * @param filePath
      * @return 文件的删除
@@ -146,11 +151,40 @@ class UtilsFile {
         return false;
     }
 
-
     public static void updateFile(String filePath) throws Exception {
         File f = new File(filePath);
 
     }
 
+    public static void m1() throws Exception {
+        File file = new File("C:" + File.separator + "Users" + File.separator + "86182" + File.separator + "Desktop" + File.separator + "2222.txt");
+        BufferedReader b= new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+        String line;
+        while ((line = b.readLine()) != null) {
+            System.out.print(line + "\r\n");
+        }
+        b.close();
+    }
 
+    public static void m2() throws Exception {
+        File file = new File("C:" + File.separator + "Users" + File.separator + "86182" + File.separator + "Desktop" + File.separator + "2222.txt");
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+        bufferedWriter.write("您好好");//覆盖式写法
+        bufferedWriter.flush();
+        bufferedWriter.close();
+    }
+
+    public static void m3() throws Exception {
+        //RandomAccessFile
+        //随机访问文件流，自身具备读写的方法。
+        //通过skipBytes(int x),seek(int x)来达到随机访问。
+        //注意：用RandomAccessFile来操作文件的时候,由于对占两个字节的字符可能出现截断的情况，所以只建议操作字节型文件
+        //操作文字，也就是字符型数据，要出错。
+        File file = new File("C:" + File.separator + "Users" + File.separator + "86182" + File.separator + "Desktop" + File.separator + "2222.txt");
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+        long filelength = randomAccessFile.length();
+        randomAccessFile.seek(filelength);
+        randomAccessFile.writeBytes("12345678");
+        randomAccessFile.close();
+    }
 }

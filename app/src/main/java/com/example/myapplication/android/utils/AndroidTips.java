@@ -131,6 +131,11 @@ Exynap一个帮助开发者自动生成样板代码的 AndroidStudio 插件
 子类构造函数
 子类普通方法
 */
+//小技巧8  设置toolbar 为没有在style里面设置
 
+
+    //小技巧9  有空研究下fiddler
+
+    //小技巧10  okhttpfinal 笔者推荐的开源框架
 
 }

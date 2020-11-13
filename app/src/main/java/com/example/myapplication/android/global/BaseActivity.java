@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 
+import java.io.Serializable;
+
 
 /**
  * Created by wangqi on 2017/12/9.
@@ -127,13 +129,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 //    /*
 //     * Activity的跳转-带参数
 //     */
-//    public void setIntentClass(Class<?> cla, Object obj) {
-//        Intent intent = new Intent();
-//        intent.setClass(this, cla);
-//        intent.putExtra(INTENTTAG, (Serializable) obj);
-//        startActivity(intent);
+    public void setIntentClass(Class<?> cla, Object obj) {
+        Intent intent = new Intent();
+        intent.setClass(this, cla);
+        intent.putExtra("INTENTTAG", (Serializable) obj);
+        startActivity(intent);
 //        overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
-//    }
+    }
 
 //    /**
 //     * Activity-webviewactivity的跳转-带参数
