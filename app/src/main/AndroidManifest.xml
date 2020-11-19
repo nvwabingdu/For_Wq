@@ -45,6 +45,16 @@
         <activity android:name=".zqr.chapter5.moonretrofit.MyRetrofitActivity"></activity>
         <activity android:name=".zqr.chapter7.mooneventbus.OneEventBusActivity"></activity>
         <activity android:name=".zqr.chapter7.mooneventbus.SecondActivity"></activity>
+        <activity android:name=".zqr.chapter8.moonrxjava.RxMainActivity"></activity>
+        <activity android:name=".zqr.chapter8.moonrxjava.bus.RxBusActivity"></activity>
+        <activity android:name=".zqr.chapter8.moonrxjava.net.OkhttpActivity"></activity>
+        <activity android:name=".zqr.chapter8.moonrxjava.net.RetrofitActivity"></activity>
+        <activity android:name=".zqr.chapter8.moonrxjava.OneActivity"></activity>
+        <activity android:name=".zqr.chapter9.moonbutterknife.ButterKnifeActivity"></activity>
+        <activity android:name=".zqr.chapter9.moonannotation.AnnActivity"></activity>
+        <!--暂时-->
+        <activity android:name=".android.webviewsss.WebActivity"></activity>
+
     </application>
 
     <!--    网络权限-->

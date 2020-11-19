@@ -1,9 +1,10 @@
 package com.example.myapplication.zqr.chapter3.mooncustomviewgroup;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
 

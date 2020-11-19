@@ -8,8 +8,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-        /*好用的插件*/
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        /*好用的插件
+        * 1.仅仅在编译时期去依赖处理注解处理所在函数库并进行工作，但不会打包到APK中。
+        * 2.为注解处理器生成的代码设置好路径，以便Android Studio能够找到它。
+        * 使用方法在主项目中的build中引用
+        * apply plugin: 'com.neenbedankt.android-apt'
+        *    apt project(':processor')
+        * */
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -27,3 +33,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+

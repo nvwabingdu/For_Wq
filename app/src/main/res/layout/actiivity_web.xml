@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:id="@+id/web_tv1"
+        android:text="网址"
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+
+    </TextView>
+
+        <WebView
+            android:background="@color/colorPrimary"
+            android:id="@+id/web"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </WebView>
+
+
+</LinearLayout>

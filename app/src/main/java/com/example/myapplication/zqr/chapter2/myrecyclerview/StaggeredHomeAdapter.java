@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +12,10 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
+import com.example.myapplication.zqr.chapter2.mytablayout.RecyclerViewAdapter;
 
 class StaggeredHomeAdapter extends RecyclerView.Adapter<StaggeredHomeAdapter.MyViewHolder> {
 
@@ -99,7 +100,7 @@ class StaggeredHomeAdapter extends RecyclerView.Adapter<StaggeredHomeAdapter.MyV
         notifyItemRemoved(position);
     }
 
-    class MyViewHolder extends ViewHolder {
+    class MyViewHolder extends RecyclerViewAdapter.ViewHolder {
 
         TextView tv;
 

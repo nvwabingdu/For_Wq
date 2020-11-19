@@ -1,11 +1,13 @@
 package com.example.myapplication.zqr.chapter1.mooncoordinatorlayout;
 
 import android.content.Context;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
 
 /**
  * Created by Administrator on 2016/9/26 0026.

@@ -3,16 +3,18 @@ package com.example.myapplication.zqr.chapter2.myrecyclerview;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.example.myapplication.R;
+import com.example.myapplication.android.webviewsss.WebActivity;
 import com.example.myapplication.zqr.chapter1.mooncoordinatorlayout.CollapsingToolbarActivity;
 import com.example.myapplication.zqr.chapter1.mooncoordinatorlayout.CoordinatorLayoutActivity;
 import com.example.myapplication.zqr.chapter1.moondesignsupportlibrary.ShowSnackActivity;
@@ -26,6 +28,9 @@ import com.example.myapplication.zqr.chapter5.moonokhttp3.OkHttpActivity;
 import com.example.myapplication.zqr.chapter5.moonretrofit.MyRetrofitActivity;
 import com.example.myapplication.zqr.chapter5.moonvolley.MyVolleyActivity;
 import com.example.myapplication.zqr.chapter7.mooneventbus.OneEventBusActivity;
+import com.example.myapplication.zqr.chapter8.moonrxjava.RxMainActivity;
+import com.example.myapplication.zqr.chapter8.moonrxjava.OneActivity;
+import com.example.myapplication.zqr.chapter9.moonbutterknife.ButterKnifeActivity;
 import com.example.myapplication.zqr.moonpermissions.PermissonsActivity;
 import com.example.myapplication.zqr.chapter2.moontoolbar.ToolbarActivity;
 import com.example.myapplication.zqr.chapter2.mycardview.CardViewActivity;
@@ -70,6 +75,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
         mList.add("MyVolleyActivity");
         mList.add("MyRetrofitActivity");
         mList.add("OneEventBusActivity");
+        mList.add("RxMainActivity");
+        mList.add("OneActivity");
+        mList.add("WebActivity");
+        mList.add("ButterKnifeActivity");
 
 
 
@@ -178,6 +187,18 @@ public class RecyclerViewActivity extends AppCompatActivity {
                         break;
                     case 17:
                         sentTO(OneEventBusActivity.class);
+                        break;
+                    case 18:
+                        sentTO(RxMainActivity.class);
+                        break;
+                    case 19:
+                        sentTO(OneActivity.class);
+                        break;
+                    case 20:
+                        sentTO(WebActivity.class);
+                        break;
+                    case 21:
+                        sentTO(ButterKnifeActivity.class);
                         break;
 
 

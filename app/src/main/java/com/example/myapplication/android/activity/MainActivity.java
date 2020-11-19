@@ -1,16 +1,14 @@
 package com.example.myapplication.android.activity;
 
-
 import android.os.Bundle;
 import android.view.View;
-
 
 import com.example.myapplication.R;
 import com.example.myapplication.android.global.BaseActivity;
 import com.example.myapplication.zqr.chapter2.myrecyclerview.RecyclerViewActivity;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity{
 
     @Override
     public int LayoutId() {

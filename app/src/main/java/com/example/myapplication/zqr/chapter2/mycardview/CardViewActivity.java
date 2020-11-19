@@ -1,10 +1,10 @@
 package com.example.myapplication.zqr.chapter2.mycardview;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import android.support.v7.widget.CardView;
 import android.widget.SeekBar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.myapplication.R;
 

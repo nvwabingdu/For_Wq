@@ -2,14 +2,15 @@ package com.example.myapplication.zqr.chapter1.moondesignsupportlibrary;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.myapplication.R;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Created by Android Studio.
@@ -17,7 +18,7 @@ import com.example.myapplication.R;
  * Date: 2020-11-08
  * Time: 16:47
  */
-public class ShowSnackActivity extends AppCompatActivity{
+public class ShowSnackActivity extends AppCompatActivity {
 
     private Button bt_snackbar;
     private Button bt_textInputLayout;
@@ -56,6 +57,6 @@ public class ShowSnackActivity extends AppCompatActivity{
                                 "Toast",
                                 Toast.LENGTH_SHORT).show();
                     }
-                }).setDuration(Snackbar.LENGTH_LONG).show();
+                }).setDuration(1000).show();
     }
 }

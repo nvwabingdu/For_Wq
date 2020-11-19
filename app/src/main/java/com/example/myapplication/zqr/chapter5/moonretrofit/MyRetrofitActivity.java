@@ -1,11 +1,13 @@
 package com.example.myapplication.zqr.chapter5.moonretrofit;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.myapplication.R;
 import com.example.myapplication.zqr.chapter5.moonretrofit.model.Ip;
 import com.example.myapplication.zqr.chapter5.moonvolley.IpModel;
@@ -22,7 +24,7 @@ public class MyRetrofitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_retrofit);
+        setContentView(R.layout.activity_retrofit2);
         bt_request = (Button) findViewById(R.id.bt_request);
         bt_request.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.net.UrlQuerySanitizer;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.myapplication.android.utils.Tools;
 
