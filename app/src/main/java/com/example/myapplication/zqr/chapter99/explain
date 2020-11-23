@@ -1,0 +1,146 @@
+//    dagger // dagger包下大多是核心注解
+//├── Binds.class // 注解@Module中的抽象方法，主要场景是@Inject注解构造函数+有继承关系的对象上
+//├── BindsInstance.class // 注解@Component.Builder中的方法，用于绑定某个实例以提供数据依赖
+//├── BindsOptionalOf.class // 需要结合JDK 1.8中的Optional类使用，用于某个对象可空的情景上，在kotlin中实在鸡肋
+//├── Component$Builder.class // 用于自定义Component的Builder对象
+//├── Component.class // dagger核心注解之一，用于定义一个桥接类，其中有modules和dependencies两个属性，分别指定依赖的数据仓库 和 依赖的其他桥接类
+//├── Component$Factory.class // 与Component$Builder作用一样，dagger2.22引入，目前不常用
+//├── internal // internal包中是一些辅助类，常用于dagger生成的代码中（此包中的内容有所省略，挑重点总结）
+//│   ├── DoubleCheck.class // 提供了provider()和lazy()两个静态方法，分别用于实现局部单例和dagger.Lazy懒加载数据上
+//│   ├── MapBuilder.class // 用于辅助@IntoMap等构建Map容器，最终生成的是一个不可修改的Map容器
+//│   ├── SetBuilder.class // 用于辅助@IntoSet等构建Set容器，最终生成的是一个不可修改的Set容器
+//├── Lazy.class // dagger.Lazy对象，用于dagger注入懒加载对象
+//├── MapKey.class // 用于辅助Map注入的自定义Key的注解
+//├── MembersInjector.class // 注入器的接口
+//├── Module.class // dagger核心注解之一，用于定义一个数据仓库，其中有includes和subcomponents两个属性，分别指定对其他数据仓库的简单组合 和 对@Subcomponent桥接类的依赖
+//├── multibindings // multibindings包下是一些有关与dagger的multibing特性的东西
+//│   ├── ClassKey.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//│   ├── ElementsIntoSet.class // 用于辅助Set注入，可以将一个已有的Set注入到最终的Set中
+//│   ├── IntKey.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//│   ├── IntoMap.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//│   ├── IntoSet.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//│   ├── LongKey.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//│   ├── Multibinds.class // 用于辅助Set和Map注入，适用在编译器不确定是否有注入元素时，使得可以注入空容器
+//│   └── StringKey.class // 用于辅助@IntoMap，指定Map容器的Key类型
+//├── Provides.class // dagger核心注解之一，注解@Module中的方法表示此方法可以提供某种类型的数据
+//├── Reusable.class // dagger中对@Scope的一个特殊实现，目前处于测试阶段，相较于普通的@Scope，@Reusable不用在@Component上再次声明作用域
+//├── Subcomponent$Builder.class // 用于自定义Subcomponent的Builder对象
+//├── Subcomponent.class // 用于自定义一个桥接类，此桥接类不能单独使用也不会被dagger单独生成对应Daggerxxx类，需要配合@Module.subcomponent使用
+//└── Subcomponent$Factory.class // 与Subcomponent$Builder作用一致
+
+
+
+
+----------------------------------------------------------------------------
+
+
+
+Dagger2是一个基于JSR-330标准的依赖注入框架，在编译期间自动生成代码，负责依赖对象的创建。
+
+这里是简单的dagger2注入 用于理解dagger2
+
+两种情况需要使用  @module  @provides 来说明
+1.使用了第三方库，
+2.抽象类
+
+@Module
+public class GsonModule {
+    @ApplicationScope
+    @Provides
+    public Gson provideGson() {
+        return new Gson();
+    }
+
+//@Module标注在类上，用来告诉component，可以从这个类中获取依赖对象
+// @provodes标记在方法上，表示可以通过这个方法来获取依赖对象的实例，通俗来说，
+// @module标注的类就是其实就是一个工厂，用来生成各种类，@provodes标记的方法，就是用来生成这些类的实例的。
+}
+
+
+@Named   @Qualifier
+@Qualifier:是限定符，@Named 是 @Qualifier的一种实现。
+
+当有两个相同的依赖的时候，他们都继承于同一个父类或者均实现于同一个接口。
+当他们被同时提高给高层的时候，Component就不知道到底要提供哪一个依赖对象了，
+
+
+
+ //--------------------------------Named
+    @Provides
+    @Named("Child")
+    public Person provides(){
+        return new Child();
+    }
+
+    @Provides
+    @Named("Girl")
+    public Person provides1(){
+        return new Girl();
+    }
+//
+//    public class Home {
+//        private com.example.myapplication.zqr.chapter99.pak1.Child child;
+//
+//        @Inject
+//        public Home(@Named("Child") com.example.myapplication.zqr.chapter99.pak1.Child child){
+//            this.child=child;
+//        }
+//
+//        public String walk(){
+//            return child.walk();
+//        }
+//
+//
+//    }
+
+
+    //------------------------------------------Qualifier
+    //标记在注解上
+    //1.
+//    @Qualifier
+//    @Retention(RetentionPolicy.RUNTIME)
+//    public @interface Child{
+//    }
+//
+//    @Qualifier
+//    @Retention(RetentionPolicy.RUNTIME)
+//    public @interface Girl{
+//    }
+//
+//    //2.
+//    @Module
+//    public class  ChildModule{
+//        @Provides
+//        @Child
+//        public Person providesChild(){
+//            return new com.example.myapplication.zqr.chapter99.pak1.Child();
+//        }
+//        @Provides
+//        @Child
+//        public Person providesGirl(){
+//            return new com.example.myapplication.zqr.chapter99.pak1.Girl();
+//        }
+//
+//    }
+//
+//    public class Home2 {
+//        private com.example.myapplication.zqr.chapter99.pak1.Child child;
+//
+//        @Inject
+//        public Home2(@Child com.example.myapplication.zqr.chapter99.pak1.Child child){
+//            this.child=child;
+//        }
+//
+//        public String walk(){
+//            return child.walk();
+//        }
+//    }
+
+
+@Scope  @Singleton
+
+@Scope：用来自定义注解
+@Singleton: 用来配合实现局部单例和全局单例的。
+
+
+

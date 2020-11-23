@@ -1,0 +1,10 @@
+学习前要先了解 Data Binding
+M:
+V:viewModel  这个层和 model   view 进行双向绑定
+V:
+
+
+       Model<--------viewModel------->view
+
+
+       model--------->viewModel<-------view

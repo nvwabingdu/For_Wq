@@ -1,0 +1,401 @@
+databinding语法
+
+1.首先在项目build.gradle文件下添加，表示为启用databinding
+
+android {
+------------------------------
+    dataBinding {
+        enabled = true
+    }
+}
+
+
+2.设置bean
+public class Swordman {
+    private String name;
+    private String level;
+    public Swordman(String name, String level) { this.name = name;this.level = level; }
+
+    public String getName() {return name;}
+    public void setName(String name) { this.name = name; }
+
+    public String getLevel() { return level; }
+    public void setLevel(String level) { this.level = level; }
+}
+
+
+3.布局文件
+<?xml version="1.0" encoding="utf-8"?>
+<layout  //必须要用layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <data>//data语法
+        <variable            //节点
+            name="swordman"       //相当于变量名称
+            type="com.example.myapplicationtab.data.Swordman" />   //类的位置 变量的类型
+
+            //点击方式2
+             <variable
+              name="but_onClick"
+              type="android.view.View.OnClickListener" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{swordman.name}"/>   //文字上
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{swordman.level}"/>
+            //点击方式1
+        <Button
+             android:id="@+id/binding_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="点击按钮"/>
+             //点击方式2
+         <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{but_onClick}"/>
+    </LinearLayout>
+</layout>
+
+4.类中进行绑定
+
+public class MyActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ItemBinding binding=DataBindingUtil.setContentView(this, R.layout.item); //ItemBinding 是系统根据xml文件生成的辅助类
+        Swordman swordman=new Swordman("武松","21");
+        binding.setSwordman(swordman);
+
+          //设置点击事件方式1    bindingButton为系统生成的  xml中为@+id/binding_button
+                binding.bindingButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
+                //设置点击事件方式2
+                        binding.setButOnClick(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+
+    }
+}
+
+
+5.import 用法
+<data>
+        <import type="com.example.myapplicationtab.data.Swordman" alias="name1"></import>
+        <!--用于节点导包-->
+        <import type="com.example.myapplicationtab.ui.main.Swordman"></import>
+
+        <variable
+            name="name1"
+            type="name1" />
+        <variable
+            name="swordman"
+            type="Swordman" />
+
+            <data/>
+
+6.基本数据定义   java.lang.*包中的会自动导入 因此不用import
+  </data>
+        <variable
+            name="name"
+            type="String" />
+        <variable
+            name="age"
+            type="int" />
+        <variable
+            name="man"
+            type="boolean" />
+    </data>
+
+ <TextView
+            android:text="@{name}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(age)}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(man)}"/>
+   //使用方式
+                    binding.setName("");
+                        binding.setAge(23);
+                        binding.setMan(true);
+
+7.集合
+<data>
+        <import type="java.util.ArrayList"></import>
+        <!--用于节点导包-->
+        <import type="java.util.Map"></import>
+        <variable
+            name="List"
+            type="ArrayList" />
+        <variable
+            name="map"
+            type="Map" />
+        <variable
+            name="arry"
+            type="String[]" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:text="@{List.get(1)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{map.get('1')}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{arry[1]}"/>
+    </LinearLayout>
+
+
+//使用
+ ArrayList list=new ArrayList();
+        list.add(1);
+        list.add(2);
+        binding.setList(list);
+
+        Map map=new HashMap();
+        map.put(1,34);
+        map.put(2,15);
+        binding.setMap(map);
+
+        String[] strarry={"dadad","dadad"};
+        binding.setArry(strarry);
+
+
+8.自定义binding类名
+
+默认文件会在build文件夹下面的debug文件包下面  通过编译后会生成
+默认根据布局文件命名，以大写开头，移除下划线后续单词首字母大写，并用Binding结尾，
+
+为了方便使用
+  <data class="com.example.myapplicationtab.data.MySwordmanBinding">
+  <data class=".MySwordmanBinding"> //这个为项目包
+可以通过自定义 如上  改变生成位置和名字   需要先编译？
+
+
+9.静态方法调用
+
+public class StateMethod {
+    public static final String getName(Swordman swordman){
+        return swordman.getName();
+    }
+}
+
+
+
+//xml
+ <data >
+        <import type="com.example.myapplicationtab.data.StateMethod"></import>
+        <!--用于节点导包-->
+        <import type="com.example.myapplicationtab.data.Swordman"></import>
+       <variable
+           name="swordman"
+           type="Swordman" />
+    </data>
+
+<TextView
+            android:text="@{StateMethod.getName(swordman)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+            //在xml中调用了Statemethod方法的getname  这个方法需要传入Swordman因此要在activity中设置如下。？？
+
+             binding.setSwordman(new Swordman("武松","14岁"));
+
+10.部分语法
+<data>
+  <import type="android.view.View"></import>
+        <variable
+            name="view"
+            type="View" />
+        <variable
+            name="flag"
+            type="Boolean" />
+<data/>
+ <TextView
+            android:visibility="@{flag?view.VISIBLE:view.GONE}"//三目运算符
+            android:text="@{'Age:'+String.valueOf(age)}" //字符串拼接
+
+            android:text="@{StateMethod.getName(swordman)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+10.1  converter  转换器  用于转成需要的格式
+
+//放入的是时间值 这里需要转换
+ <data >
+      <variable
+          name="time"
+          type="java.util.Date" />
+    </data>
+
+        <TextView
+            android:text="@{time}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+            //converter 静态方法
+              @BindingConversion    //注意添加此注解
+                public static String convertDate(Date date){
+                   SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd");
+                   return simpleDateFormat.format(date);
+                }
+
+                //最后在程序中调用
+
+     binding.setTime(new Date());
+
+
+11.动态更新    BaseObservable
+//继承BaseObservable
+//get方法添加注解 @Bindable
+//set方法设置通知  notifyPropertyChanged(BR.name);  BR是编译时生成的类
+
+public class ObSwordman extends BaseObservable {
+    private String name;
+    private String age;
+    public ObSwordman(String name, String age) {
+        this.name = name;
+        this.age = age;
+    }
+    @Bindable
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+        notifyPropertyChanged(BR.name);
+    }
+    @Bindable
+    public String getAge() {
+        return age;
+    }
+    public void setAge(String age) {
+        this.age = age;
+        notifyPropertyChanged(BR.age);
+    }
+}
+
+//xml文件内容
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <data>
+        <variable
+            name="obswordman"
+            type="com.example.myapplicationtab.data.ObSwordman" />
+    </data>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(obswordman.age)}" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{obswordman.name}" />
+        <Button
+            android:id="@+id/but_onClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击按钮"></Button>
+    </LinearLayout>
+</layout>
+
+
+
+//使用
+ItemBinding binding=DataBindingUtil.setContentView(this, R.layout.item); //ItemBinding 是系统根据xml文件生成的辅助类
+        Obswordman=new ObSwordman("武松","21");
+        binding.setObswordman(Obswordman);
+        //点击更新
+        binding.butOnClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Obswordman.setName("武二郎");
+            }
+        });
+
+
+12.多个容器类需要更新
+
+
+
+
+
+
+13.双向绑定
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <data>
+        <variable
+            name="obswordman"
+            type="com.example.myapplicationtab.data.ObSwordman" />
+    </data>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(obswordman.age)}" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@={obswordman.name}" />
+        <Button
+            android:id="@+id/but_onClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点击按钮"></Button>
+    </LinearLayout>
+</layout>
+
+//使用  （关键点 @={obswordman.name}   还有前提要设置动态更新Observable）
+
+ binding=DataBindingUtil.setContentView(this, R.layout.item); //ItemBinding 是系统根据xml文件生成的辅助类
+         Obswordman=new ObSwordman("武松","21"));
+        binding.setObswordman(Obswordman);
+        //点击更新
+        binding.butOnClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Obswordman.setName("武二郎");
+            }
+        });

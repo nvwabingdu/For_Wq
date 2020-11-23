@@ -5,11 +5,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.annotations.annotation.cls.BindView;
+
 import com.example.myapplication.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import butterknife.BindView;
 
 
 /**

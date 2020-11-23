@@ -1,0 +1,7 @@
+M:模型层 业务 逻辑
+V：xml
+C: activity  fragment
+ M<========>V
+  <-      ->
+    -   -
+      C

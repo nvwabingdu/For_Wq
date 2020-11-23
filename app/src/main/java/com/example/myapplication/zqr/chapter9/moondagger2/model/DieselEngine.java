@@ -8,7 +8,8 @@ package com.example.myapplication.zqr.chapter9.moondagger2.model;
 public class DieselEngine extends Engine{
 
 
+    @Override
     public String work() {
-        return "柴油发动机发动";
+        return "柴油机发动";
     }
 }
