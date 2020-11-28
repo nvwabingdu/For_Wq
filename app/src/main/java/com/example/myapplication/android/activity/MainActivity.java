@@ -23,7 +23,6 @@ public class MainActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //RecyclerViewActivity
         this.findViewById(R.id.open).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,3 +3,37 @@
    4大基本组件都需要注册才能使用,每个Activity、service、Content Provider内容提供者都需要在AndroidManifest文件中进行配置
 AndroidManifest文件中未进行声明的activity、服务以及内容提供者将不为系统所见，从而也就不可用，
 
+
+
+开发应用需要保存一些配置参数，如果是window软件通常我们会采用ini文件进行保存，如果是j2se应用，我们会采用properties属性文件进行保存。如果是Android应用，我们最适合采用SharedPreferences保存数据，它是一个轻量级的存储类，特别适合用于保存软件配置参数。
+
+    使用SharedPreferences保存数据，其背后是用xml文件存放数据，文件存放在/data/data/<packagename>/shared_prefs目录下。例如：
+
+      SharedPreferences sharedPreferences =getSharedPreferences("mltest", Context.MODE_PRIVATE);
+      Editor editor = sharedPreferences.edit();//获取编辑器
+      editor.putString("name", "四种模式");
+      editor.putInt("age", 4);
+      editor.commit();//提交修改
+      生成的mltest.xml文件内容如下：
+<?xml version='1.0' encoding='utf-8'standalone='yes' ?>
+<map>
+<stringname="name">四种模式</string>
+<int name="age" value="4" />
+</map>
+因为SharedPreferences背后是使用xml文件保存数据，getSharedPreferences(name,mode)方法的第一个参数用于指定该文件的名称，名称不用带后缀，后缀会由Android自动加上。方法的第二个参数指定文件的操作模式，共有四种操作模式，
+
+这四种模式代表的含义为：
+
+Context.MODE_PRIVATE    =  0
+Context.MODE_APPEND    =  32768
+Context.MODE_WORLD_READABLE =  1
+Context.MODE_WORLD_WRITEABLE =  2
+
+Context.MODE_PRIVATE：为默认操作模式，代表该文件是私有数据，只能被应用本身访问，在该模式下，写入的内容会覆盖原文件的内容，如果想把新写入的内容追加到原文件中。可以使用Context.MODE_APPEND
+Context.MODE_APPEND：模式会检查文件是否存在，存在就往文件追加内容，否则就创建新文件。
+Context.MODE_WORLD_READABLE和Context.MODE_WORLD_WRITEABLE用来控制其他应用是否有权限读写该文件。
+MODE_WORLD_READABLE：表示当前文件可以被其他应用读取；MODE_WORLD_WRITEABLE：表示当前文件可以被其他应用写入。
+
+
+
+另外Activity还提供了另一个getPreferences(mode)方法操作SharedPreferences，这个方法默认使用当前类不带包名的类名作为文件的名称。
