@@ -5,10 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+
+import java.util.List;
 
 public class ListFragment extends Fragment {
 
@@ -16,8 +20,7 @@ public class ListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRecyclerView =
-                (RecyclerView) inflater.inflate(R.layout.list_fragment, container, false);
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.list_fragment, container, false);
         return mRecyclerView;
     }
 
@@ -28,3 +31,18 @@ public class ListFragment extends Fragment {
         mRecyclerView.setAdapter(new RecyclerViewAdapter(getActivity()));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

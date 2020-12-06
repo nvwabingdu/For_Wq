@@ -77,7 +77,7 @@ private static final String TAG="HttpUrl";
         }).start();
     }
 
-
+//------------------------ httpClient的请求方式
     /**
      * 设置默认请求参数，并返回HttpClient
      *
@@ -104,36 +104,12 @@ private static final String TAG="HttpUrl";
      *
      * @param url
      */
-
     private void useHttpClientGet(String url) {
         HttpGet mHttpGet = new HttpGet(url);
         mHttpGet.addHeader("Connection", "Keep-Alive");
         try {
             HttpClient mHttpClient = createHttpClient();
             HttpResponse mHttpResponse = mHttpClient.execute(mHttpGet);
-            HttpEntity mHttpEntity = mHttpResponse.getEntity();
-            int code = mHttpResponse.getStatusLine().getStatusCode();
-            if (null != mHttpEntity) {
-                InputStream mInputStream = mHttpEntity.getContent();
-                String respose = converStreamToString(mInputStream);
-                Log.d(TAG, "请求状态码:" + code + "\n请求结果:\n" + respose);
-                mInputStream.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void useHttpClientPost(String url) {
-        HttpPost mHttpPost = new HttpPost(url);
-        mHttpPost.addHeader("Connection", "Keep-Alive");
-        try {
-            HttpClient mHttpClient = createHttpClient();
-            List<NameValuePair> postParams = new ArrayList<>();
-            //要传递的参数
-            postParams.add(new BasicNameValuePair("ip", "59.108.54.37"));
-            mHttpPost.setEntity(new UrlEncodedFormEntity(postParams));
-            HttpResponse mHttpResponse = mHttpClient.execute(mHttpPost);
             HttpEntity mHttpEntity = mHttpResponse.getEntity();
             int code = mHttpResponse.getStatusLine().getStatusCode();
             if (null != mHttpEntity) {
@@ -166,6 +142,29 @@ private static final String TAG="HttpUrl";
         return respose;
     }
 
+
+    private void useHttpClientPost(String url) {
+        HttpPost mHttpPost = new HttpPost(url);
+        mHttpPost.addHeader("Connection", "Keep-Alive");
+        try {
+            HttpClient mHttpClient = createHttpClient();
+            List<NameValuePair> postParams = new ArrayList<>();
+            //要传递的参数
+            postParams.add(new BasicNameValuePair("ip", "59.108.54.37"));
+            mHttpPost.setEntity(new UrlEncodedFormEntity(postParams));
+            HttpResponse mHttpResponse = mHttpClient.execute(mHttpPost);
+            HttpEntity mHttpEntity = mHttpResponse.getEntity();
+            int code = mHttpResponse.getStatusLine().getStatusCode();
+            if (null != mHttpEntity) {
+                InputStream mInputStream = mHttpEntity.getContent();
+                String respose = converStreamToString(mInputStream);
+                Log.d(TAG, "请求状态码:" + code + "\n请求结果:\n" + respose);
+                mInputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void useHttpUrlConnectionPost(String url) {
         InputStream mInputStream = null;
         HttpURLConnection mHttpURLConnection = UrlConnManager.getHttpURLConnection(url);

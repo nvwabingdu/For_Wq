@@ -47,10 +47,15 @@ public class MyRetrofitActivity extends AppCompatActivity {
         String url = "http://ip.taobao.com/service/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
+                //增加返回值为jsoon的支持，还有其他格式
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IpService ipService = retrofit.create(IpService.class);
+        MyRetrofit.IpService ipService = retrofit.create(MyRetrofit.IpService.class);
+        //通过之前的定义接口，获得call
         Call<IpModel> call = ipService.getIpMsg();
+//        call.execute()//同步请求网络？
+//        call.cancel();//取消请求
+        //请求并处理回调
         call.enqueue(new Callback<IpModel>() {
             @Override
             public void onResponse(Call<IpModel> call, Response<IpModel> response) {
@@ -76,7 +81,7 @@ public class MyRetrofitActivity extends AppCompatActivity {
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IpServiceForPath ipService = retrofit.create(IpServiceForPath.class);
+        MyRetrofit.IpServiceForPath ipService = retrofit.create( MyRetrofit.IpServiceForPath.class);
         Call<IpModel> call = ipService.getIpMsg(path);
         call.enqueue(new Callback<IpModel>() {
             @Override
@@ -104,7 +109,7 @@ public class MyRetrofitActivity extends AppCompatActivity {
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IpServiceForQuery ipService = retrofit.create(IpServiceForQuery.class);
+        MyRetrofit.IpServiceForQuery ipService = retrofit.create( MyRetrofit.IpServiceForQuery.class);
         Call<IpModel> call = ipService.getIpMsg(ip);
         call.enqueue(new Callback<IpModel>() {
             @Override
@@ -132,7 +137,7 @@ public class MyRetrofitActivity extends AppCompatActivity {
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IpServiceForPost ipService = retrofit.create(IpServiceForPost.class);
+        MyRetrofit.IpServiceForPost ipService = retrofit.create( MyRetrofit.IpServiceForPost.class);
         Call<IpModel> call = ipService.getIpMsg(ip);
         call.enqueue(new Callback<IpModel>() {
             @Override
@@ -160,7 +165,7 @@ public class MyRetrofitActivity extends AppCompatActivity {
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        IpServiceForPostBody ipService = retrofit.create(IpServiceForPostBody.class);
+        MyRetrofit.IpServiceForPostBody ipService = retrofit.create( MyRetrofit.IpServiceForPostBody.class);
         Call<IpModel> call = ipService.getIpMsg(new Ip(ip));
         call.enqueue(new Callback<IpModel>() {
             @Override
