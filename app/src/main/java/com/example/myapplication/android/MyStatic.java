@@ -11,14 +11,22 @@ import java.util.Arrays;
  * Time: 11:25
  */
 class MyStatic {
-    //三元运算符比较大小
+    /**
+     * @param a 三元运算符比较大小
+     * @param b
+     * @param c
+     * @return
+     */
     public static int three_math(int a,int b,int c) {
         a=a>b?a:b;
         a=a>c?a:c;
         return a;
     }
 
-    //冒泡排序
+    /**
+     * @param arr 冒泡排序
+     * @return
+     */
     public static  String maoPao(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - i - 1; j++) {
@@ -41,7 +49,9 @@ class MyStatic {
         return Arrays.toString(arr);
     }
 
-    //二位数组遍历
+    /**
+     * @param arr 二位数组遍历
+     */
     public static void twoforeach(int[][] arr) {
         for(int i=0;i<arr.length;i++){
             for(int j=0;j<arr[i].length;j++){
@@ -51,8 +61,11 @@ class MyStatic {
         }
     }
 
-    //二分查找方法
-    //方法一：直接调用BinarySearch()二分查找方法
+    /**
+     * @return 二分查找方法
+     *     方法一：直接调用BinarySearch()二分查找方法
+     */
+
     public static int halfSearch() {
         int[] arr = new int[]{45, 78, 79, 102, 123, 145, 165, 178, 198, 255, 320};
         Log.e("binarySearch", Arrays.binarySearch(arr, 78) + "");
@@ -60,7 +73,11 @@ class MyStatic {
         return 0;
     };
 
-    //方法二：自己手写
+    /**
+     * @param arr 方法二：自己手写
+     * @param key
+     * @return
+     */
     public static int halfSearsh(int[] arr,int key) {
         int min,max,mid;
         min=0;
@@ -78,6 +95,24 @@ class MyStatic {
             }
         }
         return mid;
+    }
+
+    /**
+     * @param str 取消文本html的标记对比如<p></p>  <font></font>
+     * @return
+     */
+    private static String delHtmlTag(String str) {
+        String tempStr = str;
+        while (true) {
+            if (str.contains("<") & str.contains(">")) {
+                tempStr = str.replace(str.substring(str.indexOf("<"), str.indexOf(">") + 1), "");
+            } else {
+                break;
+            }
+            str = tempStr;
+        }
+
+        return tempStr;
     }
 
 
