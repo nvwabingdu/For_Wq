@@ -1,0 +1,5 @@
+kotlin的封装终端io的类在 stdlib/src/kotlin/io/Console.kt
+
+kotlin 的序列化
+
+internal typealias Serializable=java.io.Serializable

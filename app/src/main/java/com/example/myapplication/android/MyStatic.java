@@ -101,7 +101,7 @@ class MyStatic {
      * @param str 取消文本html的标记对比如<p></p>  <font></font>
      * @return
      */
-    private static String delHtmlTag(String str) {
+    public static String delHtmlTag(String str) {
         String tempStr = str;
         while (true) {
             if (str.contains("<") & str.contains(">")) {
@@ -111,8 +111,16 @@ class MyStatic {
             }
             str = tempStr;
         }
-
         return tempStr;
+    }
+
+    /**
+     * @param a qqqqqqq$33333$333$44444
+     * @param b $
+     * @return  3个
+     */
+    public static int getAContainsBSum(String a,String b){
+        return (a.length()-a.replace(b,"").length())/b.length();
     }
 
 

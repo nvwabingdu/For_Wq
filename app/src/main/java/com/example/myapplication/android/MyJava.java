@@ -1109,7 +1109,7 @@ class MyJava {
             mVetor.addElement(123);//添加到尾部
             mVetor.insertElementAt("你好", 34);//指定角标插入
             mVetor.add(12, 34);//指定位置添加
-            mVetor.add(12);//??
+            mVetor.add(12);//
             mVetor.setElementAt("787", 12);//指定位置修改
             mVetor.removeElementAt(21);//移除角标处
             mVetor.removeAllElements();//清空，长度为0

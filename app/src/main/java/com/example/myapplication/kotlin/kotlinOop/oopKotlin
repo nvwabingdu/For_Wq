@@ -1,0 +1,142 @@
+
+关于kotlin对象
+
+1，接口可以包含属性声明   kotlin的类声明默认是public 和 final
+2.嵌套类并不是默认在内部的  ，它们不包含外部类的隐式引用
+3，用data修饰符来声明一个数据类型，使用object来表示单例对象？？？？？？？
+
+4.kotlin的类成员
+构造  初始化快
+属性
+函数
+嵌套类和内部类
+对象声明
+还有许多？
+
+class  World{}  最简单的声明
+
+1.一个类可以拥有一个主构造函数  如下
+
+open class  Student construtor(var name:String ,var age:Int):Any(){}
+//如果主构造函数 没有任何注解或者可见性修饰符，可以省略construtor
+
+//反之有修饰符的话 都放在前面
+class ElementarySchoolStudent public @MyAutowired constructor(name: String, age: Int) : Student(name, age) {
+
+抽象类的一些方法已在open……类中写明
+
+接口没有构造函数
+
+interface Minterface{
+}
+
+class mclass : minterface, othersInterface{  // 继承用：代替    多个用逗号隔开
+}
+
+
+
+1.继承父类的 public  protected   不能继承private
+2.如果子类有同名属性 则会隐藏父类的属性 需要调用用super即可
+
+继承多接口的时候
+
+super.xxxx   会有冲突
+
+使用如下
+
+super<Minterface>.xxxx     //明确是那个爹的遗产
+
+
+
+2.定义父类的时候   需要open关键字修饰  像public一样
+
+3.需要被复写的方法  需要open
+如
+open fun doingsomething(){
+}
+
+final  override fun doingsomething(){
+super.doingsomething()
+
+}
+
+
+
+4.object Aclass{vla username:Stirng="121"}   //相当于静态属性或者方法  或者说是单例？
+
+使用
+
+val aa=Aclass.username             //不能使用构造方式    val aclass=Aclass()    是不能这样使用
+
+
+可以用来写工具类    推荐
+
+fun mm(s:Int ,y:Int){
+val pppp=object{           //匿名内部类    此方法只能用在private  本地   不能用于
+              var x=0
+              var y=12
+               }
+ }
+
+
+一个类可以有且仅有一个伴生对象
+class ClassA{
+ companion object { //通过 companion关键字来标明   作用相当于java静态类中的 属性和方法
+  fun create():ClassA=ClassA()//???????????????
+  }
+}
+   companion object ClassB{ //可以指定名称
+
+  }
+}
+
+//使用方法 ClassA.属性    ClassA.方法    (一般用前面的省略写法  ClassA.companion.属性)
+//                                      (有名字的话  ClassA.ClassB.属性)
+
+//如果需要使用java中的静态方法   需要如下注解
+@JvmField   //生成与该属性相同的静态字段
+@JvmStatic   //在单例对象和伴生对象中生成对应的静态方法
+
+
+
+
+
+4.类中可以嵌套，可以嵌套多层
+使用方式
+类.类.类().属性/方法
+
+内层的访问不到外层的    要想访问外层的话 需要加上inner  关键字修饰
+
+加inner的叫内部类
+
+使用方式
+类.类.类().inner类().属性/方法
+
+
+
+
+代理模式
+
+A接口{ 工作方法 }
+
+类A 实现 A接口 { 工作方法() }
+
+类B 实现 A接口 {
+
+工作方法(
+this.开始
+this.a接口.工作方法（）
+this.结束
+)
+
+私有 A接口 a接口=null
+
+类B构造(A接口)
+
+开始方法()
+
+结束方法()
+}
+
+测试
+类A 类a=new 类A          写的妈卖批
